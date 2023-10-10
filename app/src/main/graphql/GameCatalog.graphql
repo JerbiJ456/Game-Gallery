@@ -1,0 +1,12 @@
+query GameCatalog($pageSize : Int) {
+    allGames(pageSize: $pageSize) {
+        results {
+            id
+            name
+            backgroundImage
+            tags {
+                name
+            }
+        }
+    }
+}
