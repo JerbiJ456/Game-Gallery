@@ -1,8 +1,6 @@
 package com.tc.gamegallery.domain
 
-import com.apollographql.apollo3.api.Optional
-
-class getGameDetailsUseCase (
+class GetGameDetailsUseCase (
     private val gameClient: GameClient
     ) {
 

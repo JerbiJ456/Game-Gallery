@@ -3,7 +3,7 @@ package com.tc.gamegallery.domain
 import com.apollographql.apollo3.api.Optional
 
 //one use case per request
-class getGameCatalogUseCase(
+class GetGameCatalogUseCase(
     private val gameClient: GameClient
 ) {
 

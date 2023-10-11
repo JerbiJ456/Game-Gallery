@@ -5,16 +5,19 @@ import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
 import com.tc.gamegallery.domain.GameCatalog
 import com.tc.gamegallery.domain.GameDetails
-import com.tc.gamegallery.domain.getGameCatalogUseCase
-import com.tc.gamegallery.domain.getGameDetailsUseCase
+import com.tc.gamegallery.domain.GetGameCatalogUseCase
+import com.tc.gamegallery.domain.GetGameDetailsUseCase
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class GameCatalogViewModel(
-    private val getGameCatalogUseCase: getGameCatalogUseCase,
-    private val getGameDetailsUseCase: getGameDetailsUseCase
+@HiltViewModel
+class GameCatalogViewModel @Inject constructor(
+    private val getGameCatalogUseCase: GetGameCatalogUseCase,
+    private val getGameDetailsUseCase: GetGameDetailsUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow(GamesCatalogState())
