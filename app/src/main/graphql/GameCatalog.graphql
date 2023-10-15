@@ -4,6 +4,7 @@ query GameCatalog($pageSize : Int) {
             id
             name
             backgroundImage
+            thumbnailImage
             tags {
                 name
             }

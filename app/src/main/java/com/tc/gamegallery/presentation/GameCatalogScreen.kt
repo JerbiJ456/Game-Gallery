@@ -1,6 +1,5 @@
 package com.tc.gamegallery.presentation
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -13,8 +12,10 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import coil.compose.SubcomposeAsyncImage
 import com.tc.gamegallery.domain.GameCatalog
 import kotlin.random.Random
 
@@ -60,9 +61,18 @@ private fun gameItem(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
-                    .background(generateRandomColor())
-            )
+                    .clipToBounds()
+            ) {
+                SubcomposeAsyncImage(
+                    model = game.thumbnailImage,
+                    loading = {
+                        CircularProgressIndicator()
+                    },
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
             Text(
                 text = game.name,
                 style = MaterialTheme.typography.h6,
