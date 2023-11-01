@@ -7,9 +7,9 @@ class GetGameCatalogUseCase(
     private val gameClient: GameClient
 ) {
 
-    suspend fun execute(pageSize: Optional<Int>): List<GameCatalog> {
+    suspend fun execute(pageSize: Optional<Int>, page: Optional<Int>): List<GameCatalog> {
         return gameClient
-            .getGamesCatalog(pageSize)
+            .getGamesCatalog(pageSize, page)
             .sortedBy { it.name }
     }
 }

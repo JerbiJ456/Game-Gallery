@@ -5,10 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -23,7 +20,9 @@ import kotlin.random.Random
 fun gameCatalogScreen(
     state: GameCatalogViewModel.GamesCatalogState,
     onSelectGame: (id: Int) -> Unit,
-    onDismissGameDetails: () -> Unit
+    onDismissGameDetails: () -> Unit,
+    onNextPage: (currentPage: Int) -> Unit,
+    onPreviousPage: (currentPage: Int) -> Unit,
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.isLoading) {
@@ -40,6 +39,34 @@ fun gameCatalogScreen(
                 items(state.gamesCatalog) { game -> gameItem(
                     game,
                     modifier = Modifier.clickable { onSelectGame(game.id) })
+                }
+            }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+            ) {
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp),
+                    onClick = {
+                        onPreviousPage(state.currentPage)
+                    }
+                ) {
+                    Text("Previous")
+                }
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp),
+                    onClick = {
+                        onNextPage(state.currentPage)
+                    }
+                ) {
+                    Text("Next")
                 }
             }
         }

@@ -32,7 +32,9 @@ class MainActivity : ComponentActivity() {
                 gameCatalogScreen(
                     state = state,
                     onSelectGame = { viewModel.selectGame(it) },
-                    onDismissGameDetails = {}
+                    onDismissGameDetails = {},
+                    onNextPage = { viewModel.nextPage(it) },
+                    onPreviousPage = { viewModel.previousPage(it) }
                 )
             }
         }

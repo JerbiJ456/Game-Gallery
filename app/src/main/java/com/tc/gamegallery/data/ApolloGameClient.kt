@@ -11,9 +11,12 @@ import com.tc.gamegallery.domain.GameDetails
 class ApolloGameClient(
     private val apolloClient: ApolloClient
     ) : GameClient {
-    override suspend fun getGamesCatalog(pageSize: Optional<Int?>): List<GameCatalog> {
+    override suspend fun getGamesCatalog(
+        pageSize: Optional<Int?>,
+        page: Optional<Int?>
+    ): List<GameCatalog> {
         return apolloClient
-            .query(GameCatalogQuery(pageSize))
+            .query(GameCatalogQuery(pageSize, page))
             .execute()
             .data
             ?.allGames

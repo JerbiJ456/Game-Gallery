@@ -1,5 +1,5 @@
-query GameCatalog($pageSize : Int) {
-    allGames(pageSize: $pageSize) {
+query GameCatalog($pageSize : Int, $page: Int) {
+    allGames(pageSize: $pageSize, page: $page) {
         results {
             id
             name
