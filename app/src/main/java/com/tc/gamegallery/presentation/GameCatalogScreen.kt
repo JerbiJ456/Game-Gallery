@@ -23,6 +23,7 @@ fun gameCatalogScreen(
     onDismissGameDetails: () -> Unit,
     onNextPage: (currentPage: Int) -> Unit,
     onPreviousPage: (currentPage: Int) -> Unit,
+    onSearch: (search: String) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.isLoading) {
@@ -107,14 +108,4 @@ private fun gameItem(
             )
         }
     }
-}
-
-@Composable
-fun generateRandomColor(): Color {
-    return Color(
-        Random.nextFloat(),
-        Random.nextFloat(),
-        Random.nextFloat(),
-        1f // Alpha value is 1f which means opaque
-    )
 }

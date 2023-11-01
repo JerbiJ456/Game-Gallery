@@ -32,7 +32,8 @@ class GameCatalogViewModel @Inject constructor(
             _state.update { it.copy(
                 gamesCatalog = getGameCatalogUseCase.execute(
                     Optional.present(10),
-                    Optional.present(1)
+                    Optional.present(1),
+                    Optional.present("")
                 ),
                 isLoading = false
             ) }
@@ -54,16 +55,29 @@ class GameCatalogViewModel @Inject constructor(
     }
 
     fun nextPage(currentPage: Int) {
-        val newPage = (currentPage + 1).coerceIn(1, 15)
-        updatePage(newPage)
+        val pageNumber = (_state.value.currentPage + 1).coerceIn(1, 15)
+        _state.update { it.copy(
+            currentPage = pageNumber
+        ) }
+        updatePage()
     }
 
     fun previousPage(currentPage: Int) {
-        val newPage = (currentPage - 1).coerceIn(1, 15)
-        updatePage(newPage)
+        val pageNumber = (_state.value.currentPage - 1).coerceIn(1, 15)
+        _state.update { it.copy(
+            currentPage = pageNumber
+        ) }
+        updatePage()
     }
 
-    private fun updatePage(newPage: Int) {
+    fun search(search: String) {
+        _state.update { it.copy(
+            currentSearch = search
+        ) }
+        updatePage()
+    }
+
+    private fun updatePage() {
         viewModelScope.launch {
             _state.update {it.copy(
                 isLoading = true
@@ -72,10 +86,10 @@ class GameCatalogViewModel @Inject constructor(
             _state.update { it.copy(
                 gamesCatalog = getGameCatalogUseCase.execute(
                     Optional.present(10),
-                    Optional.present(newPage)
+                    Optional.present(_state.value.currentPage),
+                    Optional.present(_state.value.currentSearch)
                 ),
                 isLoading = false,
-                currentPage = newPage
             ) }
         }
     }
@@ -84,7 +98,8 @@ class GameCatalogViewModel @Inject constructor(
         val gamesCatalog: List<GameCatalog> = emptyList(),
         val isLoading: Boolean = false,
         val selectedGame: GameDetails? = null,
-        val currentPage: Int = 1
+        val currentPage: Int = 1,
+        val currentSearch: String = ""
     )
 
 }

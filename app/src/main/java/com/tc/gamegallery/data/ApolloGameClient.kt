@@ -13,10 +13,11 @@ class ApolloGameClient(
     ) : GameClient {
     override suspend fun getGamesCatalog(
         pageSize: Optional<Int?>,
-        page: Optional<Int?>
+        page: Optional<Int?>,
+        search: Optional<String?>
     ): List<GameCatalog> {
         return apolloClient
-            .query(GameCatalogQuery(pageSize, page))
+            .query(GameCatalogQuery(pageSize, page, search))
             .execute()
             .data
             ?.allGames
