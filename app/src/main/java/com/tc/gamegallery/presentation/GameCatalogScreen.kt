@@ -1,5 +1,6 @@
 package com.tc.gamegallery.presentation
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
@@ -21,8 +22,8 @@ fun gameCatalogScreen(
     state: GameCatalogViewModel.GamesCatalogState,
     onSelectGame: (id: Int) -> Unit,
     onDismissGameDetails: () -> Unit,
-    onNextPage: (currentPage: Int) -> Unit,
-    onPreviousPage: (currentPage: Int) -> Unit,
+    onNextPage: () -> Unit,
+    onPreviousPage: () -> Unit,
     onSearch: (search: String) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -48,28 +49,45 @@ fun gameCatalogScreen(
                     .padding(top = 16.dp)
                     .align(Alignment.BottomCenter)
                     .navigationBarsPadding()
+                    .background(Color.White)
             ) {
                 Button(
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp),
                     onClick = {
-                        onPreviousPage(state.currentPage)
+                        onPreviousPage()
                     }
                 ) {
                     Text("Previous")
                 }
+                Text(
+                    text = state.currentPage.toString(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp)
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                        .wrapContentHeight(Alignment.CenterVertically)
+                )
                 Button(
                     modifier = Modifier
                         .weight(1f)
                         .padding(8.dp),
                     onClick = {
-                        onNextPage(state.currentPage)
+                        onNextPage()
                     }
                 ) {
                     Text("Next")
                 }
             }
+            TextField(
+                value = state.currentSearch,
+                onValueChange = { onSearch(it) },
+                label = { Text("Search") },
+                modifier = Modifier.fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .background(Color.White)
+            )
         }
     }
 }

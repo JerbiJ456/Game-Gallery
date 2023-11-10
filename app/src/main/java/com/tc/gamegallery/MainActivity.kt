@@ -33,8 +33,8 @@ class MainActivity : ComponentActivity() {
                     state = state,
                     onSelectGame = { viewModel.selectGame(it) },
                     onDismissGameDetails = {},
-                    onNextPage = { viewModel.nextPage(it) },
-                    onPreviousPage = { viewModel.previousPage(it) },
+                    onNextPage = { viewModel.nextPage() },
+                    onPreviousPage = { viewModel.previousPage() },
                     onSearch = { viewModel.search(it.toString()) }
                 )
             }
