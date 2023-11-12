@@ -1,9 +1,18 @@
-query GameCatalog($pageSize : Int) {
-    allGames(pageSize: $pageSize) {
+query GameCatalog(
+    $pageSize : Int,
+    $page: Int,
+    $search: String
+) {
+    allGames(
+        pageSize: $pageSize,
+        page: $page,
+        search: $search
+    ) {
         results {
             id
             name
             backgroundImage
+            thumbnailImage
             tags {
                 name
             }

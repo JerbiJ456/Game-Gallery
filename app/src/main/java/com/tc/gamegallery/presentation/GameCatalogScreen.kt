@@ -6,15 +6,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.material.Card
-import androidx.compose.material.CircularProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import coil.compose.SubcomposeAsyncImage
 import com.tc.gamegallery.domain.GameCatalog
 import kotlin.random.Random
 
@@ -22,7 +21,10 @@ import kotlin.random.Random
 fun gameCatalogScreen(
     state: GameCatalogViewModel.GamesCatalogState,
     onSelectGame: (id: Int) -> Unit,
-    onDismissGameDetails: () -> Unit
+    onDismissGameDetails: () -> Unit,
+    onNextPage: () -> Unit,
+    onPreviousPage: () -> Unit,
+    onSearch: (search: String) -> Unit
 ) {
     Box(modifier = Modifier.fillMaxSize()) {
         if (state.isLoading) {
@@ -41,6 +43,51 @@ fun gameCatalogScreen(
                     modifier = Modifier.clickable { onSelectGame(game.id) })
                 }
             }
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp)
+                    .align(Alignment.BottomCenter)
+                    .navigationBarsPadding()
+                    .background(Color.White)
+            ) {
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp),
+                    onClick = {
+                        onPreviousPage()
+                    }
+                ) {
+                    Text("Previous")
+                }
+                Text(
+                    text = state.currentPage.toString(),
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp)
+                        .wrapContentWidth(Alignment.CenterHorizontally)
+                        .wrapContentHeight(Alignment.CenterVertically)
+                )
+                Button(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(8.dp),
+                    onClick = {
+                        onNextPage()
+                    }
+                ) {
+                    Text("Next")
+                }
+            }
+            TextField(
+                value = state.currentSearch,
+                onValueChange = { onSearch(it) },
+                label = { Text("Search") },
+                modifier = Modifier.fillMaxWidth()
+                    .align(Alignment.TopCenter)
+                    .background(Color.White)
+            )
         }
     }
 }
@@ -60,9 +107,18 @@ private fun gameItem(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(180.dp)
-                    .background(generateRandomColor())
-            )
+                    .clipToBounds()
+            ) {
+                SubcomposeAsyncImage(
+                    model = game.thumbnailImage,
+                    loading = {
+                        CircularProgressIndicator()
+                    },
+                    contentDescription = null,
+                    modifier = Modifier
+                        .fillMaxSize()
+                )
+            }
             Text(
                 text = game.name,
                 style = MaterialTheme.typography.h6,
@@ -70,14 +126,4 @@ private fun gameItem(
             )
         }
     }
-}
-
-@Composable
-fun generateRandomColor(): Color {
-    return Color(
-        Random.nextFloat(),
-        Random.nextFloat(),
-        Random.nextFloat(),
-        1f // Alpha value is 1f which means opaque
-    )
 }
