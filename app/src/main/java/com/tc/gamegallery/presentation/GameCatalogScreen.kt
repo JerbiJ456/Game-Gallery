@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.SubcomposeAsyncImage
 import com.tc.gamegallery.domain.GameCatalog
@@ -122,7 +123,9 @@ private fun gameItem(
             Text(
                 text = game.name,
                 style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(16.dp)
+                modifier = Modifier.padding(16.dp),
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }
