@@ -10,13 +10,8 @@ import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import coil.compose.SubcomposeAsyncImage
-import com.tc.gamegallery.domain.GameCatalog
-import kotlin.random.Random
 
 @Composable
 fun gameCatalogScreen(
@@ -88,44 +83,6 @@ fun gameCatalogScreen(
                 modifier = Modifier.fillMaxWidth()
                     .align(Alignment.TopCenter)
                     .background(Color.White)
-            )
-        }
-    }
-}
-
-@Composable
-private fun gameItem(
-    game: GameCatalog,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth(0.5f) // Prend 50% de la largeur de l'écran
-            .padding(4.dp), // Petite marge pour éviter que les cartes ne se collent entre elles
-        elevation = 4.dp
-    ) {
-        Column {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clipToBounds()
-            ) {
-                SubcomposeAsyncImage(
-                    model = game.thumbnailImage,
-                    loading = {
-                        CircularProgressIndicator()
-                    },
-                    contentDescription = null,
-                    modifier = Modifier
-                        .fillMaxSize()
-                )
-            }
-            Text(
-                text = game.name,
-                style = MaterialTheme.typography.h6,
-                modifier = Modifier.padding(16.dp),
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
             )
         }
     }
