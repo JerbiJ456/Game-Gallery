@@ -51,7 +51,7 @@ class MainActivity : ComponentActivity() {
                 ) {innerPadding ->
                     Box(modifier = Modifier.padding(innerPadding)) {
                         NavHost(navController = navController, startDestination = "games") {
-                            composable("games") { gameCatalogScreen(
+                            composable("games") {currentActivity = "Games"; gameCatalogScreen(
                                 state = state,
                                 onSelectGame = { viewModel.selectGame(it) },
                                 onDismissGameDetails = {},

@@ -27,6 +27,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 
@@ -76,7 +77,7 @@ fun BottomNavBar (navController: NavController) {
                     navController.navigate(item.title.lowercase())
                 },
                 icon = {
-                    Box(modifier = Modifier.size(width = 58.dp, height = 50.dp), contentAlignment = Alignment.TopCenter) {
+                    Box(modifier = Modifier.size(width = 59.dp, height = 50.dp), contentAlignment = Alignment.TopCenter) {
                         Icon(
                             imageVector = if (index == selectedItemIndex) {
                                 item.selectedIcon
@@ -85,7 +86,7 @@ fun BottomNavBar (navController: NavController) {
                             contentDescription = item.title,
                         )
                         Box(modifier = Modifier.height(50.dp), contentAlignment = Alignment.BottomCenter) {
-                            Text(text = item.title, color=Color.White)
+                            Text(text = item.title, color=Color.White, fontWeight = if (index == selectedItemIndex) { FontWeight.Bold } else FontWeight.Normal)
                         }
                     }
                 },
