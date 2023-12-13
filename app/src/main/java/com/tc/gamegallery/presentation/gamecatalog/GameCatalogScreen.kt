@@ -44,6 +44,43 @@ fun gameCatalogScreen(
                         )
                     }
                 }
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 16.dp)
+                        .align(Alignment.BottomCenter)
+                        .navigationBarsPadding()
+                        .background(Color.White)
+                ) {
+                    Button(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp),
+                        onClick = {
+                            onPreviousPage()
+                        }
+                    ) {
+                        Text("Previous")
+                    }
+                    Text(
+                        text = state.currentPage.toString(),
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp)
+                            .wrapContentWidth(Alignment.CenterHorizontally)
+                            .wrapContentHeight(Alignment.CenterVertically)
+                    )
+                    Button(
+                        modifier = Modifier
+                            .weight(1f)
+                            .padding(8.dp),
+                        onClick = {
+                            onNextPage()
+                        }
+                    ) {
+                        Text("Next")
+                    }
+                }
                 TextField(
                     shape = RoundedCornerShape(5.dp),
                     value = state.currentSearch,

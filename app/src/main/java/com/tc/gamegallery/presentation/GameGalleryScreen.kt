@@ -40,9 +40,9 @@ fun GameGalleryScreen() {
         topBar = {
             TopBar(navController = navController, currentActivity, showArrow = showArrow)
         },
-        /*bottomBar = {
+        bottomBar = {
             BottomNavBar(navController = navController, onDismissGameDetails = { viewModelCatalog.dismissGameDetails() })
-        }*/
+        }
     ) {innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             NavHost(navController = navController, startDestination = "games") {
