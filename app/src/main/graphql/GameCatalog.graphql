@@ -16,6 +16,9 @@ query GameCatalog(
             tags {
                 name
             }
+            genres {
+                name
+            }
         }
     }
 }

@@ -9,6 +9,7 @@ fun GameCatalogQuery.Result.toGameCatalog(): GameCatalog {
         name = name ?: "No Name",
         //backgroundImage = backgroundImage ?: "No background image",
         thumbnailImage = thumbnailImage ?: "No thumbnailImage",
-        tags = tags?.mapNotNull { it.toTag() } ?: emptyList()
+        tags = tags?.mapNotNull { it.toTag() } ?: emptyList(),
+        genres = genres?.mapNotNull { it.toGenre() } ?: emptyList()
     )
 }

@@ -2,6 +2,20 @@ query GameDetails($id : Int!) {
     gameDetails(id : $id) {
         name
         description
-        rating
+        metacritic
+        genres {
+            name
+        }
+        esrbRating {
+            name
+        }
+        publishers {
+            name
+        }
+        thumbnailImage
+        backgroundImageAdditional
+        screenshots {
+            image
+        }
     }
 }

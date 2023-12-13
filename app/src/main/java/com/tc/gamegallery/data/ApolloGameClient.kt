@@ -26,12 +26,13 @@ class ApolloGameClient(
             ?: emptyList()
     }
 
-    override suspend fun getGameDetails(id: Int): GameDetails? {
+    override suspend fun getGameDetails(id: Int): GameDetails {
         return apolloClient
             .query(GameDetailsQuery(id))
             .execute()
             .data
             ?.gameDetails
             ?.toGameDetails()
+            ?: GameDetails()
     }
 }

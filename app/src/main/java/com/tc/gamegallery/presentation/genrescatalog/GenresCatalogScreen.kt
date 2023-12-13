@@ -1,5 +1,4 @@
-package com.tc.gamegallery.presentation
-
+package com.tc.gamegallery.presentation.genrescatalog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -15,7 +14,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun GameDetailScreen(game: String?) {
+fun GenresCatalogScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -23,7 +22,7 @@ fun GameDetailScreen(game: String?) {
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Game Detail Screen",
+            text = "Genres Screen",
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier.align(Alignment.CenterHorizontally),

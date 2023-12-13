@@ -1,4 +1,4 @@
-package com.tc.gamegallery.presentation
+package com.tc.gamegallery.presentation.tagscatalog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column

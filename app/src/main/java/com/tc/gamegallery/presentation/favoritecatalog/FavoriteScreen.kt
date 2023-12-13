@@ -1,4 +1,5 @@
-package com.tc.gamegallery.presentation
+package com.tc.gamegallery.presentation.favoritecatalog
+
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -14,7 +15,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun GenresCatalogScreen() {
+fun FavoriteScreen() {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -22,7 +23,7 @@ fun GenresCatalogScreen() {
             .wrapContentSize(Alignment.Center)
     ) {
         Text(
-            text = "Genres Screen",
+            text = "Favorite Screen",
             fontWeight = FontWeight.Bold,
             color = Color.Black,
             modifier = Modifier.align(Alignment.CenterHorizontally),
