@@ -20,7 +20,9 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -61,32 +63,33 @@ val items = listOf(
 )
 
 @Composable
-fun BottomNavBar (navController: NavController) {
-    var selectedItemIndex by rememberSaveable {
-        mutableStateOf(0)
+fun BottomNavBar (navController: NavController, onDismissGameDetails: () -> Unit) {
+    val selectedItemIndex = remember {
+        mutableIntStateOf(0)
     }
     NavigationBar (containerColor = Color(0xFF0f172a), tonalElevation = 1.dp){
         items.forEachIndexed { index, item ->
             NavigationBarItem(
-                selected = selectedItemIndex == index,
+                selected = selectedItemIndex.value == index,
                 colors = NavigationBarItemDefaults.colors(
                     indicatorColor = Color(0xFF334155)
                 ),
                 onClick = {
-                    selectedItemIndex = index
+                    selectedItemIndex.value = index
+                    onDismissGameDetails()
                     navController.navigate(item.title.lowercase())
                 },
                 icon = {
                     Box(modifier = Modifier.size(width = 59.dp, height = 50.dp), contentAlignment = Alignment.TopCenter) {
                         Icon(
-                            imageVector = if (index == selectedItemIndex) {
+                            imageVector = if (index == selectedItemIndex.value) {
                                 item.selectedIcon
                             } else item.unselectedIcon,
                             tint = Color.White,
                             contentDescription = item.title,
                         )
                         Box(modifier = Modifier.height(50.dp), contentAlignment = Alignment.BottomCenter) {
-                            Text(text = item.title, color=Color.White, fontWeight = if (index == selectedItemIndex) { FontWeight.Bold } else FontWeight.Normal)
+                            Text(text = item.title, color=Color.White, fontWeight = if (index == selectedItemIndex.value) { FontWeight.Bold } else FontWeight.Normal)
                         }
                     }
                 },

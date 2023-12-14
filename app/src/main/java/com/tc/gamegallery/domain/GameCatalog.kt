@@ -4,5 +4,6 @@ data class GameCatalog(
     val id : Int,
     val name: String,
     val thumbnailImage: String,
-    val tags : List<Tag>
+    val tags : List<Tag>,
+    val genres: List<Genre>
 )

@@ -1,4 +1,4 @@
-package com.tc.gamegallery.presentation
+package com.tc.gamegallery.presentation.gamecatalog
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -34,7 +34,7 @@ class GameCatalogViewModel @Inject constructor(
 
             _state.update { it.copy(
                 gamesCatalog = getGameCatalogUseCase.execute(
-                    Optional.present(10),
+                    Optional.present(20),
                     Optional.present(1),
                     Optional.present("")
                 ),
@@ -45,8 +45,14 @@ class GameCatalogViewModel @Inject constructor(
 
     fun selectGame(id: Int) {
         viewModelScope.launch {
+            _state.update {it.copy(
+                isLoading = true
+            ) }
             _state.update { it.copy(
                 selectedGame = getGameDetailsUseCase.execute(id)
+            ) }
+            _state.update {it.copy(
+                isLoading = false
             ) }
         }
     }
