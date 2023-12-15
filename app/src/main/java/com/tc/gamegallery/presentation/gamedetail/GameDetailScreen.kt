@@ -118,7 +118,7 @@ fun GameDetailScreen(
                                     modifier = Modifier.padding(start = 15.dp, top = 14.dp, bottom = 10.dp),
                                 )
                                 Box(modifier = Modifier
-                                    .fillMaxHeight()
+                                    .fillMaxSize()
                                     .background(color = Color(0xFF334155))
                                     .clickable { showWholeDescription = !showWholeDescription }
                                     ) {

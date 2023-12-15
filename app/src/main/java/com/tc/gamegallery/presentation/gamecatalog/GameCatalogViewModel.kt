@@ -1,5 +1,6 @@
 package com.tc.gamegallery.presentation.gamecatalog
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
@@ -44,14 +45,20 @@ class GameCatalogViewModel @Inject constructor(
         updatePage()
     }
 
-    fun search(search: String) {
+    fun onSearchTextChange(search: String) {
         searchJob?.cancel()
 
         searchJob = viewModelScope.launch {
             _state.update { it.copy(
-                currentSearch = search
+                currentSearch = search,
+                nextPage = 1
             ) }
             delay(searchDebounce)
+            _state.update { it.copy(
+                isLoading = true,
+            ) }
+            Log.d("OK", _state.value.currentSearch)
+            cachedGames = emptyList()
             updatePage()
         }
     }

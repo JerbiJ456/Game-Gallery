@@ -10,6 +10,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -36,22 +38,47 @@ fun gameCatalogScreen(
         viewModel.getCallInfo(genres, tags)
     }
 
-    val topPadding = if (genres != null || tags != null) 0.dp else 70.dp
-
     Surface (color = Color(0xFF1e293b)) {
-        Box(modifier = Modifier.fillMaxSize()) {
-            if (state.isLoading) {
-                CircularProgressIndicator(
-                    modifier = Modifier.align(Alignment.Center)
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            if (genres == null && tags == null) {
+                TextField(
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = ""
+                        )
+                    },
+                    maxLines = 1,
+                    shape = RoundedCornerShape(5.dp),
+                    value = state.currentSearch,
+                    onValueChange = { viewModel.onSearchTextChange(it) },
+                    placeholder = { Text("Search for games...") },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.White)
+                        .padding(5.dp),
                 )
+            }
+            if (state.isLoading) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
             } else {
                 LazyVerticalGrid(
                     columns = GridCells.Fixed(2),
-                    modifier = Modifier.padding(end = 16.dp, top = topPadding, start = 16.dp), // Pour ajouter un peu d'espace au bas de la liste
+                    modifier = Modifier.padding(
+                        end = 16.dp,
+                        start = 16.dp
+                    ), // Pour ajouter un peu d'espace au bas de la liste
                     horizontalArrangement = Arrangement.spacedBy(8.dp) // espace entre les cartes sur l'axe horizontal
                 ) {
                     itemsIndexed(state.results) { index, game ->
-                        if(index == state.currentPage*10 - 1 && state.nextPage != null) {
+                        if (index == state.currentPage * 10 - 1 && state.nextPage != null) {
                             viewModel.nextPage()
                         }
                         GameTile(
@@ -59,19 +86,6 @@ fun gameCatalogScreen(
                             navController = navController
                         )
                     }
-                }
-                if (genres == null && tags == null) {
-                    TextField(
-                        shape = RoundedCornerShape(5.dp),
-                        value = state.currentSearch,
-                        onValueChange = { viewModel.search(it) },
-                        label = { Text("Search") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .align(Alignment.TopCenter)
-                            .background(Color.White)
-                            .padding(5.dp)
-                    )
                 }
             }
         }
