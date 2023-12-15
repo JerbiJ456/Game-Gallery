@@ -20,16 +20,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 
 @Composable
 fun TopBar(
     navController: NavController,
-    currentActivity: MutableState<String>,
+    viewModel: GameGalleryViewModel,
     modifier: Modifier = Modifier,
-    showArrow: MutableState<Boolean>
 ) {
     Box(
         modifier = modifier
@@ -40,7 +42,7 @@ fun TopBar(
             .height(72.dp)
     ) {
         Row(modifier = modifier.fillMaxHeight()) {
-            if(showArrow.value) {
+            if(viewModel.shouldShowArrow()) {
                 Box(modifier = modifier, contentAlignment = Alignment.TopStart) {
                     Icon(
                         imageVector = Icons.Default.ArrowBack,
@@ -50,15 +52,20 @@ fun TopBar(
                             .size(36.dp)
                             .offset(16.dp, 16.dp)
                             .clickable {
-                                showArrow.value = false
                                 navController.popBackStack()
                             }
                             .padding(3.dp)
                     )
                 }
             }
-            Box(modifier = modifier.fillMaxWidth(0.4f).padding(horizontal = 5.dp, vertical = 15.dp), contentAlignment = Alignment.Center) {
-                Text(text = currentActivity.value, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 25.sp)
+            Box(modifier = modifier.fillMaxWidth().padding(horizontal = 30.dp, vertical = 15.dp)) {
+                Text(text = viewModel.getCurrentActivity(),
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 25.sp,
+                    maxLines = 1,
+                    overflow = TextOverflow.Ellipsis
+                )
             }
         }
     }

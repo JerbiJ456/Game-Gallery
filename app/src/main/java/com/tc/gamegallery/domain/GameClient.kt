@@ -7,10 +7,13 @@ interface GameClient {
     suspend fun getGamesCatalog(
         pageSize: Optional<Int?>,
         page: Optional<Int?>,
-        search: Optional<String?>
-    ) : List<GameCatalog>
+        search: Optional<String?>,
+        genres: Optional<String?>
+    ) : GameCatalog
 
     suspend fun getGameDetails(id: Int) : GameDetails?
 
-    //put other request here for example getGameDetails
+    suspend fun getGameGenres(
+        pageSize: Optional<Int?>,
+        page: Optional<Int?>) : GenresTags
 }

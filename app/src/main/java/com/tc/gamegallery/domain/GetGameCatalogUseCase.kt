@@ -10,10 +10,10 @@ class GetGameCatalogUseCase(
     suspend fun execute(
         pageSize: Optional<Int>,
         page: Optional<Int>,
-        search: Optional<String>
-    ): List<GameCatalog> {
+        search: Optional<String>,
+        genres: Optional<String?>
+    ): GameCatalog {
         return gameClient
-            .getGamesCatalog(pageSize, page, search)
-            .sortedBy { it.name }
+            .getGamesCatalog(pageSize, page, search, genres)
     }
 }

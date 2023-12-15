@@ -1,9 +1,6 @@
 package com.tc.gamegallery.domain
 
 data class GameCatalog(
-    val id : Int,
-    val name: String,
-    val thumbnailImage: String,
-    val tags : List<Tag>,
-    val genres: List<Genre>
+    val nextPage: Int? = null,
+    val results: List<ResultGames> = emptyList()
 )

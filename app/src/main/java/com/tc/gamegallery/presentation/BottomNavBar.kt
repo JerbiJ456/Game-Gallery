@@ -63,7 +63,7 @@ val items = listOf(
 )
 
 @Composable
-fun BottomNavBar (navController: NavController, onDismissGameDetails: () -> Unit) {
+fun BottomNavBar (navController: NavController) {
     val selectedItemIndex = remember {
         mutableIntStateOf(0)
     }
@@ -76,7 +76,6 @@ fun BottomNavBar (navController: NavController, onDismissGameDetails: () -> Unit
                 ),
                 onClick = {
                     selectedItemIndex.value = index
-                    onDismissGameDetails()
                     navController.navigate(item.title.lowercase())
                 },
                 icon = {

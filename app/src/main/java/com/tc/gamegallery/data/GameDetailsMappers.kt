@@ -7,7 +7,7 @@ import com.tc.gamegallery.domain.GameDetails
 fun GameDetailsQuery.GameDetails.toGameDetails(): GameDetails {
     return GameDetails(
         name = name ?: "Name not found",
-        description = description ?: "No description",
+        description = description!!.ifBlank { "No description" },
         metacritic = metacritic ?: 0,
         genres = genres?.mapNotNull { it.toGenre() } ?: emptyList(),
         esrbRating = EsrbRating(esrbRating?.name ?: "N/A"),

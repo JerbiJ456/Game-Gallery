@@ -1,0 +1,19 @@
+query GameGenres(
+    $pageSize : Int,
+    $page: Int
+) {
+    allGenres(
+        pageSize: $pageSize,
+        page: $page,
+    ) {
+        nextPage
+        results {
+            id
+            name
+            thumbnailImage
+            games {
+                name
+            }
+        }
+    }
+}

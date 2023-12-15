@@ -2,12 +2,15 @@ query GameCatalog(
     $pageSize : Int,
     $page: Int,
     $search: String
+    $genres: String
 ) {
     allGames(
         pageSize: $pageSize,
         page: $page,
         search: $search
+        genres: $genres
     ) {
+        nextPage
         results {
             id
             name

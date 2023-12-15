@@ -3,13 +3,9 @@ package com.tc.gamegallery.data
 import com.tc.gamegallery.GameCatalogQuery
 import com.tc.gamegallery.domain.GameCatalog
 
-fun GameCatalogQuery.Result.toGameCatalog(): GameCatalog {
+fun GameCatalogQuery.AllGames.toGameCatalog(): GameCatalog {
     return GameCatalog(
-        id = id,
-        name = name ?: "No Name",
-        //backgroundImage = backgroundImage ?: "No background image",
-        thumbnailImage = thumbnailImage ?: "No thumbnailImage",
-        tags = tags?.mapNotNull { it.toTag() } ?: emptyList(),
-        genres = genres?.mapNotNull { it.toGenre() } ?: emptyList()
+        nextPage = nextPage,
+        results = results?.mapNotNull {it.toResult()} ?: emptyList(),
     )
 }
