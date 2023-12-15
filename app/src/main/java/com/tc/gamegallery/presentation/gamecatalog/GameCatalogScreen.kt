@@ -1,6 +1,7 @@
 package com.tc.gamegallery.presentation.gamecatalog
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -52,11 +53,18 @@ fun gameCatalogScreen(
                             contentDescription = ""
                         ) },
                     trailingIcon = {
-                        Icon(
-                        imageVector = Icons.Default.Close,
-                        contentDescription = ""
-                    ) },
-                    maxLines = 1,
+                        if (state.currentSearch.isNotBlank()) {
+                            Box(modifier = Modifier
+                                .clickable { viewModel.onSearchTextChange("") })
+                            {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = ""
+                                )
+                            }
+                        }
+                    },
+                    singleLine = true,
                     shape = RoundedCornerShape(10.dp),
                     value = state.currentSearch,
                     onValueChange = { viewModel.onSearchTextChange(it) },
