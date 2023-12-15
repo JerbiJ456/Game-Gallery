@@ -6,7 +6,6 @@ import com.apollographql.apollo3.api.Optional
 import com.tc.gamegallery.domain.GameCatalog
 import com.tc.gamegallery.domain.GameDetails
 import com.tc.gamegallery.domain.GetGameCatalogUseCase
-import com.tc.gamegallery.domain.GetGameDetailsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -15,67 +14,33 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.tc.gamegallery.domain.ResultGames
 
 @HiltViewModel
 class GameCatalogViewModel @Inject constructor(
     private val getGameCatalogUseCase: GetGameCatalogUseCase,
-    private val getGameDetailsUseCase: GetGameDetailsUseCase
 ): ViewModel() {
 
     private val _state = MutableStateFlow(GamesCatalogState())
     val state = _state.asStateFlow() //only the viewModel can change the state, the UI only have a immutable version of the state
     private val searchDebounce = 1000L
     private var searchJob: Job? = null
-    init {
-        viewModelScope.launch {
-            _state.update {it.copy(
-                isLoading = true
-            ) }
+    private var cachedGames = listOf<ResultGames>()
+    private var genres: String? = ""
+    private var tags: String? = ""
 
-            _state.update { it.copy(
-                gamesCatalog = getGameCatalogUseCase.execute(
-                    Optional.present(20),
-                    Optional.present(1),
-                    Optional.present("")
-                ),
-                isLoading = false
-            ) }
-        }
-    }
-
-    fun selectGame(id: Int) {
-        viewModelScope.launch {
-            _state.update {it.copy(
-                isLoading = true
-            ) }
-            _state.update { it.copy(
-                selectedGame = getGameDetailsUseCase.execute(id)
-            ) }
-            _state.update {it.copy(
-                isLoading = false
-            ) }
-        }
-    }
-
-    fun dismissGameDetails() {
-        _state.update { it.copy(
-            selectedGame = null
-        ) }
-    }
-
-    fun nextPage() {
-        val pageNumber = (_state.value.currentPage + 1).coerceIn(1, 15)
-        _state.update { it.copy(
-            currentPage = pageNumber
+    fun getCallInfo(genre: String?, tag: String?) {
+        genres = genre
+        tags = tag
+        cachedGames = emptyList()
+        _state.update {it.copy(
+            nextPage = 1,
+            results = cachedGames
         ) }
         updatePage()
     }
 
-    fun previousPage() {
-        val pageNumber = (_state.value.currentPage - 1).coerceIn(1, 15)
-        _state.update { it.copy(
-            currentPage = pageNumber
-        ) }
+    fun nextPage() {
         updatePage()
     }
 
@@ -93,27 +58,48 @@ class GameCatalogViewModel @Inject constructor(
 
     private fun updatePage() {
         viewModelScope.launch {
-            _state.update {it.copy(
-                isLoading = true
-            ) }
+            if (_state.value.nextPage != null) {
+                _state.update {
+                    it.copy(
+                        newPageIsLoading = true
+                    )
+                }
 
-            _state.update { it.copy(
-                gamesCatalog = getGameCatalogUseCase.execute(
-                    Optional.present(10),
-                    Optional.present(_state.value.currentPage),
-                    Optional.present(_state.value.currentSearch)
-                ),
-                isLoading = false,
-            ) }
+                _state.update {
+                    it.copy(
+                        gamesCatalog = getGameCatalogUseCase.execute(
+                            Optional.present(10),
+                            Optional.present(_state.value.nextPage!!),
+                            Optional.present(_state.value.currentSearch),
+                            Optional.present(genres)
+                        ),
+                        newPageIsLoading = true,
+                        isLoading = false,
+                    )
+                }
+
+                cachedGames += _state.value.gamesCatalog.results
+
+                _state.update {
+                    it.copy(
+                        currentPage = _state.value.nextPage!!,
+                        nextPage = _state.value.gamesCatalog.nextPage,
+                        results = cachedGames
+                    )
+                }
+            }
         }
     }
 
     data class GamesCatalogState(
-        val gamesCatalog: List<GameCatalog> = emptyList(),
-        val isLoading: Boolean = false,
+        val results: List<ResultGames> = emptyList(),
+        val gamesCatalog: GameCatalog = GameCatalog(),
+        val isLoading: Boolean = true,
         val selectedGame: GameDetails? = null,
         val currentPage: Int = 1,
-        val currentSearch: String = ""
+        val currentSearch: String = "",
+        val nextPage: Int? = 1,
+        val newPageIsLoading: Boolean = false,
     )
 
 }

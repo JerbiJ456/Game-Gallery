@@ -22,43 +22,79 @@ import com.tc.gamegallery.presentation.gamecatalog.GameCatalogViewModel
 import com.tc.gamegallery.presentation.gamecatalog.gameCatalogScreen
 import com.tc.gamegallery.presentation.gamedetail.GameDetailScreen
 import com.tc.gamegallery.presentation.gamedetail.GameDetailScreenViewModel
-
+import com.tc.gamegallery.presentation.genrescatalog.GenresCatalogViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 @Composable
 fun GameGalleryScreen() {
     val viewModelCatalog = hiltViewModel<GameCatalogViewModel>()
-    val stateCatalog by viewModelCatalog.state.collectAsState()
     val detailViewModel = hiltViewModel<GameDetailScreenViewModel>()
-    val detailState by detailViewModel.state.collectAsState()
-    val currentActivity = remember {
-        mutableStateOf("Games")
-    }
-    val showArrow = remember {
-        mutableStateOf(false)
-    }
+    val viewModelGenres = hiltViewModel<GenresCatalogViewModel>()
+    val appViewModel = hiltViewModel<GameGalleryViewModel>()
     val navController = rememberNavController()
     Scaffold(
         topBar = {
-            TopBar(navController = navController, currentActivity, showArrow = showArrow)
+            TopBar(navController = navController, viewModel = appViewModel)
         },
         bottomBar = {
-            BottomNavBar(navController = navController, onDismissGameDetails = { viewModelCatalog.dismissGameDetails() })
+            BottomNavBar(navController = navController, )
         }
     ) {innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            NavHost(navController = navController, startDestination = "games") {
-                composable("games") {currentActivity.value = "Games"; gameCatalogScreen(
-                    state = stateCatalog,
-                    onSelectGame = { viewModelCatalog.selectGame(it) },
-                    onDismissGameDetails = {},
-                    onNextPage = { viewModelCatalog.nextPage() },
-                    onPreviousPage = { viewModelCatalog.previousPage() },
-                    onSearch = { viewModelCatalog.search(it) },
-                    navController = navController
+            NavHost(navController = navController, startDestination = "games?genres={genres}&tags={tags}&genresName={genresName}&tagsName={tagsName}") {
+                composable("games?genres={genres}&tags={tags}&genresName={genresName}&tagsName={tagsName}",
+                    arguments = listOf(
+                        navArgument("genres") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        },
+                        navArgument("tags") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        },
+                        navArgument("genresName") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        },
+                        navArgument("tagsName") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                        }
+                    )
+                ) {
+                    val genres = remember {
+                        val genre = it.arguments?.getString("genres")
+                        if (genre == "") null else genre
+                    }
+                    val tags = remember {
+                        val tag = it.arguments?.getString("tags")
+                        if (tag == "") null else tag
+                    }
+                    val genresName = remember {
+                        val genre = it.arguments?.getString("genresName")
+                        if (genre == "") null else genre
+                    }
+                    val tagsName = remember {
+                        val tag = it.arguments?.getString("tagsName")
+                        if (tag == "") null else tag
+                    }
+                    var newActivity = genresName ?: tagsName
+                    if (newActivity == null) newActivity = "Games" else newActivity += " games"
+                    val showArrow = newActivity != "Games"
+                    appViewModel.updateActivity(newActivity)
+                    appViewModel.updateArrow(showArrow )
+                    gameCatalogScreen(
+                        viewModel = viewModelCatalog,
+                        navController = navController,
+                        genres = genres,
+                        tags = tags
                 )
                 }
-                composable("genres") { currentActivity.value = "Genres"; showArrow.value = false; GenresCatalogScreen() }
-                composable("tags") { currentActivity.value = "Tags"; showArrow.value = false; TagsCatalogScreen() }
-                composable("favorite") { currentActivity.value = "Favorite"; showArrow.value = false; FavoriteScreen() }
+                composable("genres") { appViewModel.updateActivity("Genres") ; appViewModel.updateArrow(false); GenresCatalogScreen(
+                    viewModel = viewModelGenres,
+                    navController = navController
+                ) }
+                composable("tags") { appViewModel.updateActivity("Tags"); appViewModel.updateArrow(false); TagsCatalogScreen() }
+                composable("favorite") { appViewModel.updateActivity("Favorite"); appViewModel.updateArrow(false); FavoriteScreen() }
                 composable("detail/{game}/{id}",
                     arguments = listOf(
                         navArgument("game") {
@@ -70,16 +106,16 @@ fun GameGalleryScreen() {
                     )
                 ) {
                     val gameName = remember {
-                        val name =  it.arguments?.getString("name")
+                        val name =  it.arguments?.getString("game")
                         name ?: "Game"
                     }
                     val id = remember {
                         val id = it.arguments?.getInt("id")
                         id ?: 1
                     }
-                    currentActivity.value = gameName
-                    showArrow.value = true
-                    GameDetailScreen(id = id, detailViewModel, detailState)
+                    appViewModel.updateActivity(gameName)
+                    appViewModel.updateArrow(true)
+                    GameDetailScreen(id = id, detailViewModel)
                 }
             }
         }
