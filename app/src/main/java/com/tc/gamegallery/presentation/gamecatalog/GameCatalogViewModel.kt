@@ -57,7 +57,6 @@ class GameCatalogViewModel @Inject constructor(
             _state.update { it.copy(
                 isLoading = true,
             ) }
-            Log.d("OK", _state.value.currentSearch)
             cachedGames = emptyList()
             updatePage()
         }
