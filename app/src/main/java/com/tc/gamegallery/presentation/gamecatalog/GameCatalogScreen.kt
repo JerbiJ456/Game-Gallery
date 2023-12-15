@@ -11,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,17 +50,24 @@ fun gameCatalogScreen(
                         Icon(
                             imageVector = Icons.Default.Search,
                             contentDescription = ""
-                        )
-                    },
+                        ) },
+                    trailingIcon = {
+                        Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = ""
+                    ) },
                     maxLines = 1,
-                    shape = RoundedCornerShape(5.dp),
+                    shape = RoundedCornerShape(10.dp),
                     value = state.currentSearch,
                     onValueChange = { viewModel.onSearchTextChange(it) },
                     placeholder = { Text("Search for games...") },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .background(Color.White)
-                        .padding(5.dp),
+                        .background(Color.White),
+                    colors = TextFieldDefaults.textFieldColors(
+                        backgroundColor = Color.White,
+                        focusedIndicatorColor =  Color.Transparent,
+                        unfocusedIndicatorColor =  Color.Transparent)
                 )
             }
             if (state.isLoading) {
