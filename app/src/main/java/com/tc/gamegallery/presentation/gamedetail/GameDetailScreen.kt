@@ -16,6 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
@@ -43,18 +44,20 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.tc.gamegallery.domain.EsrbRating
 import com.tc.gamegallery.domain.Screenshot
+import com.tc.gamegallery.presentation.GameGalleryViewModel
 
 @Composable
 fun GameDetailScreen(
     id: Int,
     detailsViewModal: GameDetailScreenViewModel,
+    appViewModel: GameGalleryViewModel
 ) {
-
     LaunchedEffect(id) { // only launch once
         detailsViewModal.updateGameId(id)
     }
     val detailState by detailsViewModal.state.collectAsState()
     val scrollState = rememberScrollState()
+    //appViewModel.updateScrollPositionDetails(scrollState.value)
     var showWholeDescription by remember {
         mutableStateOf(false)
     }

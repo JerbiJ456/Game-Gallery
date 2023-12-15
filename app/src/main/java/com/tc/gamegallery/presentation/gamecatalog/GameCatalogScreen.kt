@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.*
 import androidx.compose.material.icons.Icons
@@ -19,12 +20,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.LiveData
 import androidx.navigation.NavController
+import com.tc.gamegallery.presentation.GameGalleryViewModel
 
 @Composable
 fun gameCatalogScreen(
     viewModel: GameCatalogViewModel,
     navController: NavController,
+    appViewModel: GameGalleryViewModel,
     genres: String?,
     tags: String?,
 ) {
@@ -33,6 +37,9 @@ fun gameCatalogScreen(
     LaunchedEffect(listOf(genres, tags)) {
         viewModel.getCallInfo(genres, tags)
     }
+
+    val scrollState = rememberLazyGridState()
+    appViewModel.updateScrollPosition(scrollState.firstVisibleItemIndex)
 
     Surface (color = Color(0xFF1e293b)) {
         Column(
@@ -80,6 +87,7 @@ fun gameCatalogScreen(
                 }
             } else {
                 LazyVerticalGrid(
+                    state = scrollState,
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.padding(
                         end = 16.dp,

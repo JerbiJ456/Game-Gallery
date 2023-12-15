@@ -4,8 +4,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,9 +32,10 @@ fun GameGalleryScreen() {
     val viewModelTags = hiltViewModel<TagsCatalogViewModel>()
     val appViewModel = hiltViewModel<GameGalleryViewModel>()
     val navController = rememberNavController()
+    val scrollUpState = appViewModel.scrollUp.observeAsState()
     Scaffold(
         topBar = {
-            TopBar(navController = navController, viewModel = appViewModel)
+            TopBar(navController = navController, viewModel = appViewModel, scrollUpState = scrollUpState)
         },
         bottomBar = {
             BottomNavBar(navController = navController, )
@@ -80,10 +83,13 @@ fun GameGalleryScreen() {
                     if (newActivity == null) newActivity = "Games" else newActivity += " games"
                     val showArrow = newActivity != "Games"
                     appViewModel.updateActivity(newActivity)
-                    appViewModel.updateArrow(showArrow )
+                    appViewModel.updateArrow(showArrow)
+                    appViewModel.updateScrollPosition(0)
+                    appViewModel.updateScrollPositionDetails(5)
                     gameCatalogScreen(
                         viewModel = viewModelCatalog,
                         navController = navController,
+                        appViewModel = appViewModel,
                         genres = genres,
                         tags = tags
                     )
@@ -91,15 +97,24 @@ fun GameGalleryScreen() {
                 composable("genres") {
                     appViewModel.updateActivity("Genres");
                     appViewModel.updateArrow(false)
+                    appViewModel.updateScrollPosition(0)
+                    appViewModel.updateScrollPositionDetails(5)
                     GenresCatalogScreen(
                         viewModel = viewModelGenres,
-                        navController = navController
+                        navController = navController,
+                        appViewModel = appViewModel
                     )
                 }
                 composable("tags") {
                     appViewModel.updateActivity("Tags")
                     appViewModel.updateArrow(false)
-                    TagsCatalogScreen(viewModel = viewModelTags, navController = navController)
+                    appViewModel.updateScrollPosition(0)
+                    appViewModel.updateScrollPositionDetails(5)
+                    TagsCatalogScreen(
+                        viewModel = viewModelTags,
+                        navController = navController,
+                        appViewModel = appViewModel
+                        )
                 }
                 composable("favorite") {
                     appViewModel.updateActivity("Favorite")
@@ -126,7 +141,9 @@ fun GameGalleryScreen() {
                     }
                     appViewModel.updateActivity(gameName)
                     appViewModel.updateArrow(true)
-                    GameDetailScreen(id = id, detailViewModel)
+                    appViewModel.updateScrollPosition(-1)
+                    appViewModel.updateScrollPositionDetails(5)
+                    GameDetailScreen(id = id, detailsViewModal = detailViewModel, appViewModel = appViewModel)
                 }
             }
         }

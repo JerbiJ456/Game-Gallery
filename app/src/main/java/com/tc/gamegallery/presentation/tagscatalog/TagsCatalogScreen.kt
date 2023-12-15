@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
@@ -17,12 +18,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.tc.gamegallery.presentation.GameGalleryViewModel
 
 @Composable
 fun TagsCatalogScreen(
     viewModel: TagsCatalogViewModel,
-    navController: NavController
+    navController: NavController,
+    appViewModel: GameGalleryViewModel
 ) {
+    val scrollState = rememberLazyGridState()
+    appViewModel.updateScrollPosition(scrollState.firstVisibleItemIndex)
     val state by viewModel.state.collectAsState()
     Surface (color = Color(0xFF1e293b)) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -32,6 +37,7 @@ fun TagsCatalogScreen(
                 )
             } else {
                 LazyVerticalGrid(
+                    state = scrollState,
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.padding(end = 16.dp, start = 16.dp), // Pour ajouter un peu d'espace au bas de la liste
                     horizontalArrangement = Arrangement.spacedBy(8.dp) // espace entre les cartes sur l'axe horizontal

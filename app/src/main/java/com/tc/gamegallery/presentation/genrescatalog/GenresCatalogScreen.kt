@@ -9,18 +9,24 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.material.*
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.tc.gamegallery.presentation.GameGalleryViewModel
 
 
 @Composable
 fun GenresCatalogScreen(
     viewModel: GenresCatalogViewModel,
-    navController: NavController
+    navController: NavController,
+    appViewModel: GameGalleryViewModel
 ) {
+
+    val scrollState = rememberLazyGridState()
+    //appViewModel.updateScrollPosition(scrollState.firstVisibleItemIndex)
     val state by viewModel.state.collectAsState()
     Surface (color = Color(0xFF1e293b)) {
         Box(modifier = Modifier.fillMaxSize()) {
@@ -30,6 +36,7 @@ fun GenresCatalogScreen(
                 )
             } else {
                 LazyVerticalGrid(
+                    state = scrollState,
                     columns = GridCells.Fixed(2),
                     modifier = Modifier.padding(end = 16.dp, start = 16.dp), // Pour ajouter un peu d'espace au bas de la liste
                     horizontalArrangement = Arrangement.spacedBy(8.dp) // espace entre les cartes sur l'axe horizontal
