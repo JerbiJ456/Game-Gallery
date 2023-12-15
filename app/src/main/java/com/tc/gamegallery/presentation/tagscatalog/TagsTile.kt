@@ -1,4 +1,4 @@
-package com.tc.gamegallery.presentation.genrescatalog
+package com.tc.gamegallery.presentation.tagscatalog
 
 import com.tc.gamegallery.domain.ResultGenresTags
 
@@ -19,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.capitalize
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -27,18 +28,18 @@ import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 
 @Composable
-fun GenresTile(
-    genres: ResultGenresTags,
+fun TagsTile(
+    tags: ResultGenresTags,
     modifier: Modifier = Modifier,
     navController: NavController,
 ) {
-    val games = genres.games.map { it.name }
+    val games = tags.games.map { it.name }
     Card(
         modifier = modifier
             .height(230.dp)
             .fillMaxWidth(0.5f) // Prend 50% de la largeur de l'écran
             .padding(horizontal = 4.dp, vertical = 7.dp) // Petite marge pour éviter que les cartes ne se collent entre elles
-            .clickable { navController.navigate("games?genres=${genres.id}&genresName=${genres.name}") },
+            .clickable { navController.navigate("games?tags=${tags.id}&tagsName=${tags.name.replaceFirstChar(Char::titlecase)}") },
         elevation = 4.dp,
         shape = RoundedCornerShape(20.dp),
         backgroundColor = Color(0xFF334155),
@@ -52,7 +53,7 @@ fun GenresTile(
                     .clipToBounds(),
             ) {
                 SubcomposeAsyncImage(
-                    model = genres.thumbnailImage,
+                    model = tags.thumbnailImage,
                     loading = {
                         CircularProgressIndicator(modifier = modifier
                             .align(Alignment.Center)
@@ -65,7 +66,7 @@ fun GenresTile(
                 )
             }
             Text(
-                text = genres.name,
+                text = tags.name.replaceFirstChar(Char::titlecase),
                 modifier = modifier.padding(horizontal = 16.dp),
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,

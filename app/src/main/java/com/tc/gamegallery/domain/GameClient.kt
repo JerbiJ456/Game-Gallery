@@ -8,12 +8,17 @@ interface GameClient {
         pageSize: Optional<Int?>,
         page: Optional<Int?>,
         search: Optional<String?>,
-        genres: Optional<String?>
+        genres: Optional<String?>,
+        tags: Optional<String?>
     ) : GameCatalog
 
     suspend fun getGameDetails(id: Int) : GameDetails?
 
     suspend fun getGameGenres(
+        pageSize: Optional<Int?>,
+        page: Optional<Int?>) : GenresTags
+
+    suspend fun getGameTags(
         pageSize: Optional<Int?>,
         page: Optional<Int?>) : GenresTags
 }

@@ -1,11 +1,11 @@
-package com.tc.gamegallery.presentation.genrescatalog
+package com.tc.gamegallery.presentation.tagscatalog
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.api.Optional
 import com.tc.gamegallery.domain.GameDetails
 import com.tc.gamegallery.domain.GenresTags
-import com.tc.gamegallery.domain.GetGenresCatalogUseCase
+import com.tc.gamegallery.domain.GetTagsCatalogUseCase
 import com.tc.gamegallery.domain.ResultGenresTags
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -15,8 +15,8 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GenresCatalogViewModel @Inject constructor(
-    private val getGameGenres: GetGenresCatalogUseCase,
+class TagsCatalogViewModel @Inject constructor(
+    private val getTagsGenres: GetTagsCatalogUseCase,
 ): ViewModel() {
 
     private val _state = MutableStateFlow(GamesCatalogState())
@@ -29,7 +29,7 @@ class GenresCatalogViewModel @Inject constructor(
             ) }
 
             _state.update { it.copy(
-                genresCatalog = getGameGenres.execute(
+                genresCatalog = getTagsGenres.execute(
                     Optional.present(10),
                     Optional.present(1)
                 ),
@@ -60,7 +60,7 @@ class GenresCatalogViewModel @Inject constructor(
 
                 _state.update {
                     it.copy(
-                        genresCatalog = getGameGenres.execute(
+                        genresCatalog = getTagsGenres.execute(
                             Optional.present(10),
                             Optional.present(_state.value.nextPage!!)
                         ),

@@ -1,0 +1,19 @@
+query GameTags(
+    $pageSize : Int,
+    $page: Int
+) {
+    allTags(
+        pageSize: $pageSize,
+        page: $page,
+    ) {
+        nextPage
+        results {
+            id
+            name
+            thumbnailImage
+            games {
+                name
+            }
+        }
+    }
+}

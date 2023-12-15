@@ -35,6 +35,7 @@ class GameCatalogViewModel @Inject constructor(
         tags = tag
         cachedGames = emptyList()
         _state.update {it.copy(
+            isLoading = true,
             nextPage = 1,
             results = cachedGames
         ) }
@@ -65,11 +66,6 @@ class GameCatalogViewModel @Inject constructor(
     private fun updatePage() {
         viewModelScope.launch {
             if (_state.value.nextPage != null) {
-                _state.update {
-                    it.copy(
-                        newPageIsLoading = true
-                    )
-                }
 
                 _state.update {
                     it.copy(
@@ -77,9 +73,9 @@ class GameCatalogViewModel @Inject constructor(
                             Optional.present(10),
                             Optional.present(_state.value.nextPage!!),
                             Optional.present(_state.value.currentSearch),
-                            Optional.present(genres)
+                            Optional.present(genres),
+                            Optional.present(tags)
                         ),
-                        newPageIsLoading = true,
                         isLoading = false,
                     )
                 }

@@ -4,9 +4,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Scaffold
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -23,12 +20,14 @@ import com.tc.gamegallery.presentation.gamecatalog.gameCatalogScreen
 import com.tc.gamegallery.presentation.gamedetail.GameDetailScreen
 import com.tc.gamegallery.presentation.gamedetail.GameDetailScreenViewModel
 import com.tc.gamegallery.presentation.genrescatalog.GenresCatalogViewModel
-import kotlinx.coroutines.flow.MutableStateFlow
+import com.tc.gamegallery.presentation.tagscatalog.TagsCatalogViewModel
+
 @Composable
 fun GameGalleryScreen() {
     val viewModelCatalog = hiltViewModel<GameCatalogViewModel>()
     val detailViewModel = hiltViewModel<GameDetailScreenViewModel>()
     val viewModelGenres = hiltViewModel<GenresCatalogViewModel>()
+    val viewModelTags = hiltViewModel<TagsCatalogViewModel>()
     val appViewModel = hiltViewModel<GameGalleryViewModel>()
     val navController = rememberNavController()
     Scaffold(
@@ -87,14 +86,26 @@ fun GameGalleryScreen() {
                         navController = navController,
                         genres = genres,
                         tags = tags
-                )
+                    )
                 }
-                composable("genres") { appViewModel.updateActivity("Genres") ; appViewModel.updateArrow(false); GenresCatalogScreen(
-                    viewModel = viewModelGenres,
-                    navController = navController
-                ) }
-                composable("tags") { appViewModel.updateActivity("Tags"); appViewModel.updateArrow(false); TagsCatalogScreen() }
-                composable("favorite") { appViewModel.updateActivity("Favorite"); appViewModel.updateArrow(false); FavoriteScreen() }
+                composable("genres") {
+                    appViewModel.updateActivity("Genres");
+                    appViewModel.updateArrow(false)
+                    GenresCatalogScreen(
+                        viewModel = viewModelGenres,
+                        navController = navController
+                    )
+                }
+                composable("tags") {
+                    appViewModel.updateActivity("Tags")
+                    appViewModel.updateArrow(false)
+                    TagsCatalogScreen(viewModel = viewModelTags, navController = navController)
+                }
+                composable("favorite") {
+                    appViewModel.updateActivity("Favorite")
+                    appViewModel.updateArrow(false)
+                    FavoriteScreen()
+                }
                 composable("detail/{game}/{id}",
                     arguments = listOf(
                         navArgument("game") {
