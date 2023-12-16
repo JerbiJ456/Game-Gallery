@@ -1,5 +1,8 @@
 package com.tc.gamegallery.presentation.gamecatalog
 
+import androidx.compose.animation.core.LinearEasing
+import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,6 +19,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -40,6 +46,15 @@ fun gameCatalogScreen(
 
     val scrollState = rememberLazyGridState()
     appViewModel.updateScrollPosition(scrollState.firstVisibleItemIndex)
+
+    var sizeState by remember { mutableStateOf(0.dp) }
+    val size by animateDpAsState(targetValue = sizeState,
+        tween(
+            durationMillis = 300,
+            easing = LinearEasing
+        ), label = ""
+    )
+    sizeState = if (appViewModel.isSearchOpen()) 55.dp else 0.dp
 
     Surface (color = Color(0xFF1e293b)) {
         Column(
@@ -71,6 +86,7 @@ fun gameCatalogScreen(
                     onValueChange = { viewModel.onSearchTextChange(it) },
                     placeholder = { Text("Search for games...") },
                     modifier = Modifier
+                        .height(size)
                         .fillMaxWidth()
                         .background(Color.White),
                     colors = TextFieldDefaults.textFieldColors(
@@ -103,6 +119,12 @@ fun gameCatalogScreen(
                             game,
                             navController = navController
                         )
+                    }
+
+                    item {
+                        if (state.newPageIsLoading) {
+                            CircularProgressIndicator()
+                        }
                     }
                 }
             }

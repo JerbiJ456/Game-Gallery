@@ -15,6 +15,7 @@ import javax.inject.Inject
 class GameGalleryViewModel @Inject constructor(): ViewModel() {
     private val currentActivity = mutableStateOf("Games")
     private val showArrow = mutableStateOf(false)
+    private val searchOpen = mutableStateOf(false)
     private var lastScrollIndex = 0
     private var lastScrollDp = 5
     private val _scrollUp = MutableLiveData(false)
@@ -51,6 +52,14 @@ class GameGalleryViewModel @Inject constructor(): ViewModel() {
         Log.d("OK2", lastScrollDp.toString())
         _scrollUp.value = newScrollIndex > lastScrollDp
         lastScrollDp = newScrollIndex
+    }
+
+    fun updateSearchOpen() {
+        searchOpen.value = !searchOpen.value
+    }
+
+    fun isSearchOpen(): Boolean {
+        return searchOpen.value
     }
 
 }

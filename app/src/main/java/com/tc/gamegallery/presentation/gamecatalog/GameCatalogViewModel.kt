@@ -69,6 +69,12 @@ class GameCatalogViewModel @Inject constructor(
 
                 _state.update {
                     it.copy(
+                        newPageIsLoading = _state.value.nextPage != 1,
+                    )
+                }
+
+                _state.update {
+                    it.copy(
                         gamesCatalog = getGameCatalogUseCase.execute(
                             Optional.present(10),
                             Optional.present(_state.value.nextPage!!),
@@ -84,6 +90,7 @@ class GameCatalogViewModel @Inject constructor(
 
                 _state.update {
                     it.copy(
+                        newPageIsLoading = false,
                         currentPage = _state.value.nextPage!!,
                         nextPage = _state.value.gamesCatalog.nextPage,
                         results = cachedGames

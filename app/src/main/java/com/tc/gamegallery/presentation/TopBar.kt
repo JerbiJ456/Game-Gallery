@@ -15,10 +15,17 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.material.TopAppBar
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.SearchOff
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.getValue
@@ -38,60 +45,47 @@ import androidx.navigation.NavController
 fun TopBar(
     navController: NavController,
     viewModel: GameGalleryViewModel,
-    modifier: Modifier = Modifier,
     scrollUpState: State<Boolean?>
 ) {
-    var sizeState by remember { mutableStateOf(70.dp) }
+    var sizeState by remember { mutableStateOf(57.dp) }
     val size by animateDpAsState(targetValue = sizeState,
         tween(
             durationMillis = 300,
             easing = LinearEasing
         ), label = ""
     )
-    sizeState = if (scrollUpState.value == false) 70.dp else 0.dp
-    Surface(
-        color = Color(0xFF1e293b),
-        elevation = 8.dp) {
-        Box(
-            modifier = modifier
-                .background(
-                    Color(0xFF0f172a)
-                )
-                .fillMaxWidth()
-                .height(size)
-        ) {
-            Row(modifier = modifier.fillMaxHeight()) {
-                if (viewModel.shouldShowArrow()) {
-                    Box(modifier = modifier, contentAlignment = Alignment.TopStart) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = null,
-                            tint = Color.White,
-                            modifier = Modifier
-                                .size(36.dp)
-                                .offset(16.dp, 16.dp)
-                                .clickable {
-                                    navController.popBackStack()
-                                }
-                                .padding(3.dp)
-                        )
-                    }
-                }
-                Box(
-                    modifier = modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 30.dp, vertical = 15.dp)
-                ) {
+    sizeState = if (scrollUpState.value == false) 57.dp else 0.dp
+    Surface(color = Color(0xFF1e293b)) {
+            TopAppBar(
+                modifier = Modifier.fillMaxWidth().height(size),
+                contentColor = Color.White,
+                title = {
                     Text(
                         text = viewModel.getCurrentActivity(),
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 25.sp,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
+                },
+                backgroundColor = Color(0xFF0f172a),
+                navigationIcon = {
+                    if (viewModel.shouldShowArrow()) {
+                        IconButton(onClick = { navController.popBackStack() }) {
+                            Icon(Icons.Filled.ArrowBack, null)
+                        }
+                    }
+                }, actions = {
+                        if (viewModel.getCurrentActivity() == "Games") {
+                            if (!viewModel.isSearchOpen()) {
+                                IconButton(onClick = { viewModel.updateSearchOpen() }) {
+                                    Icon(Icons.Filled.Search, null)
+                                }
+                            } else {
+                                IconButton(onClick = { viewModel.updateSearchOpen() }) {
+                                    Icon(Icons.Filled.SearchOff, null)
+                                }
+                            }
+                    }
                 }
-            }
-        }
+            )
     }
 }

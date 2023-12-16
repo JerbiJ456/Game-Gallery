@@ -35,7 +35,11 @@ fun GameGalleryScreen() {
     val scrollUpState = appViewModel.scrollUp.observeAsState()
     Scaffold(
         topBar = {
-            TopBar(navController = navController, viewModel = appViewModel, scrollUpState = scrollUpState)
+            TopBar(
+                navController = navController,
+                viewModel = appViewModel,
+                scrollUpState = scrollUpState
+            )
         },
         bottomBar = {
             BottomNavBar(navController = navController, )
