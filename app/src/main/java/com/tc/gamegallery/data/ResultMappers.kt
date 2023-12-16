@@ -10,6 +10,7 @@ fun GameCatalogQuery.Result.toResult(): ResultGames {
         //backgroundImage = backgroundImage ?: "No background image",
         thumbnailImage = thumbnailImage ?: "No thumbnailImage",
         tags = tags?.mapNotNull { it.toTag() } ?: emptyList(),
-        genres = genres?.mapNotNull { it.toGenre() } ?: emptyList()
+        genres = genres?.mapNotNull { it.toGenre() } ?: emptyList(),
+        platforms = parentPlatforms?.mapNotNull { it.toPlatforms() } ?: emptyList()
     )
 }

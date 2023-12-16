@@ -5,5 +5,6 @@ data class ResultGames(
     val name: String = "",
     val thumbnailImage: String = "",
     val tags : List<Tag> = emptyList(),
-    val genres: List<Genre> = emptyList()
+    val genres: List<Genre> = emptyList(),
+    val platforms: List<Platform>,
 )

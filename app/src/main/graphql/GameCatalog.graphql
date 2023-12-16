@@ -24,6 +24,11 @@ query GameCatalog(
             genres {
                 name
             }
+            parentPlatforms {
+                platform {
+                    slug
+                }
+            }
         }
     }
 }

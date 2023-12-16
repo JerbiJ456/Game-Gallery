@@ -141,7 +141,7 @@ fun GameGalleryScreen() {
                     }
                     appViewModel.updateActivity(gameName)
                     appViewModel.updateArrow(true)
-                    appViewModel.updateScrollPosition(-1)
+                    appViewModel.updateScrollPosition(0)
                     appViewModel.updateScrollPositionDetails(5)
                     GameDetailScreen(id = id, detailsViewModal = detailViewModel, appViewModel = appViewModel)
                 }
