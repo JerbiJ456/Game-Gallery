@@ -3,7 +3,6 @@ package com.tc.gamegallery.presentation.gamedetail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,11 +15,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentSize
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Divider
 import androidx.compose.material.Surface
@@ -36,7 +36,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,21 +44,21 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.tc.gamegallery.domain.EsrbRating
 import com.tc.gamegallery.domain.Screenshot
+import com.tc.gamegallery.presentation.GameGalleryViewModel
+import com.tc.gamegallery.presentation.gamecatalog.GameTile
 
 @Composable
 fun GameDetailScreen(
     id: Int,
     detailsViewModal: GameDetailScreenViewModel,
+    appViewModel: GameGalleryViewModel
 ) {
-
     LaunchedEffect(id) { // only launch once
         detailsViewModal.updateGameId(id)
     }
     val detailState by detailsViewModal.state.collectAsState()
-    val scrollState = rememberScrollState()
-    var showWholeDescription by remember {
-        mutableStateOf(false)
-    }
+    val scrollState = rememberLazyListState()
+    appViewModel.updateScrollPosition(scrollState.firstVisibleItemIndex)
 
     Surface (color = Color(0xFF1e293b), contentColor = Color(0xFFd1d5db)) {
         Box(modifier = Modifier
@@ -76,66 +75,83 @@ fun GameDetailScreen(
                                 .fillMaxSize()
                                 .wrapContentSize(Alignment.Center)
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .verticalScroll(scrollState)
-                                    .fillMaxWidth(),
-                            ) {
-                                Box(modifier = Modifier.fillMaxSize()) {
-                                    TopImages(
-                                        backgroundImage = detailState.gameDetails?.backgroundImage,
-                                        iconImage = detailState.gameDetails?.thumbnailImage
-                                    )
+                            LazyColumn(state = scrollState) {
+                                item {
+                                    Box(modifier = Modifier.fillMaxSize()) {
+                                        TopImages(
+                                            backgroundImage = detailState.gameDetails?.backgroundImage,
+                                            iconImage = detailState.gameDetails?.thumbnailImage
+                                        )
+                                    }
                                 }
-                                Text(
-                                    text = detailState.gameDetails?.name ?: "N/A",
-                                    fontWeight = FontWeight.Bold,
-                                    modifier = Modifier.align(Alignment.CenterHorizontally),
-                                    fontSize = 23.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                )
-                                GameInfo(
-                                    esrb = detailState.gameDetails!!.esrbRating,
-                                    metacritics = detailState.gameDetails?.metacritic.toString(),
-                                    publishers = detailState.gameDetails?.publishers!!.elementAt(0).name,
-                                    genres = detailState.gameDetails?.genres!!.elementAt(0).name)
-                                Text(
-                                    text = "Screenshots",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 17.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.padding(start = 15.dp, top = 8.dp, bottom = 10.dp),
-                                )
-                                ScreenshotsSection(screenshots = detailState.gameDetails?.screenshots)
-                                Text(
-                                    text = "Description",
-                                    fontWeight = FontWeight.Bold,
-                                    fontSize = 17.sp,
-                                    maxLines = 1,
-                                    overflow = TextOverflow.Ellipsis,
-                                    modifier = Modifier.padding(start = 15.dp, top = 14.dp, bottom = 10.dp),
-                                )
-                                Box(modifier = Modifier
-                                    .fillMaxSize()
-                                    .background(color = Color(0xFF334155))
-                                    .clickable { showWholeDescription = !showWholeDescription }
-                                    ) {
-                                    Text(
-                                        text = detailState.gameDetails?.description ?: "No data",
-                                        fontWeight = FontWeight.Bold,
-                                        maxLines = if (showWholeDescription) 100 else 10,
-                                        overflow = TextOverflow.Ellipsis,
-                                        fontSize = 17.sp,
-                                        modifier = Modifier.padding(start = 15.dp, top = 14.dp, bottom = 10.dp, end = 15.dp),
-                                    )
-                                }
+                                item { GameDetails(detailState = detailState) }
                             }
                         }
                     }
                 }
             }
+    }
+}
+
+@Composable
+fun GameDetails(detailState: GameDetailScreenState) {
+    var showWholeDescription by remember {
+        mutableStateOf(false)
+    }
+    Column(
+        modifier = Modifier
+            .fillMaxWidth(),
+    ) {
+        Text(
+            text = detailState.gameDetails?.name ?: "N/A",
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.align(Alignment.CenterHorizontally),
+            fontSize = 23.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+        )
+        GameInfo(
+            esrb = detailState.gameDetails!!.esrbRating,
+            metacritics = detailState.gameDetails?.metacritic.toString(),
+            publishers = detailState.gameDetails?.publishers!!.elementAt(0).name,
+            genres = detailState.gameDetails?.genres!!.elementAt(0).name
+        )
+        Text(
+            text = "Screenshots",
+            fontWeight = FontWeight.Bold,
+            fontSize = 17.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(start = 15.dp, top = 8.dp, bottom = 10.dp),
+        )
+        ScreenshotsSection(screenshots = detailState.gameDetails?.screenshots)
+        Text(
+            text = "Description",
+            fontWeight = FontWeight.Bold,
+            fontSize = 17.sp,
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis,
+            modifier = Modifier.padding(start = 15.dp, top = 14.dp, bottom = 10.dp),
+        )
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(color = Color(0xFF334155))
+            .clickable { showWholeDescription = !showWholeDescription }
+        ) {
+            Text(
+                text = detailState.gameDetails?.description ?: "No data",
+                fontWeight = FontWeight.Bold,
+                maxLines = if (showWholeDescription) 100 else 10,
+                overflow = TextOverflow.Ellipsis,
+                fontSize = 17.sp,
+                modifier = Modifier.padding(
+                    start = 15.dp,
+                    top = 14.dp,
+                    bottom = 10.dp,
+                    end = 15.dp
+                ),
+            )
+        }
     }
 }
 

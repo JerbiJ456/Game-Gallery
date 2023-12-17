@@ -5,6 +5,7 @@ import com.apollographql.apollo3.api.Optional
 import com.tc.gamegallery.GameCatalogQuery
 import com.tc.gamegallery.GameDetailsQuery
 import com.tc.gamegallery.GameGenresQuery
+import com.tc.gamegallery.GameTagsQuery
 import com.tc.gamegallery.domain.GameCatalog
 import com.tc.gamegallery.domain.GameClient
 import com.tc.gamegallery.domain.GameDetails
@@ -17,10 +18,11 @@ class ApolloGameClient(
         pageSize: Optional<Int?>,
         page: Optional<Int?>,
         search: Optional<String?>,
-        genres: Optional<String?>
+        genres: Optional<String?>,
+        tags: Optional<String?>
     ): GameCatalog {
         return apolloClient
-            .query(GameCatalogQuery(pageSize, page, search, genres))
+            .query(GameCatalogQuery(pageSize, page, search, genres, tags))
             .execute()
             .data
             ?.allGames
@@ -48,6 +50,19 @@ class ApolloGameClient(
             .data
             ?.allGenres
             ?.toGenres()
+            ?: GenresTags()
+    }
+
+    override suspend fun getGameTags(
+        pageSize: Optional<Int?>,
+        page: Optional<Int?>
+    ): GenresTags {
+        return apolloClient
+            .query(GameTagsQuery(pageSize, page))
+            .execute()
+            .data
+            ?.allTags
+            ?.toTags()
             ?: GenresTags()
     }
 }

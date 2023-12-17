@@ -6,6 +6,7 @@ import com.tc.gamegallery.domain.GameClient
 import com.tc.gamegallery.domain.GetGameCatalogUseCase
 import com.tc.gamegallery.domain.GetGameDetailsUseCase
 import com.tc.gamegallery.domain.GetGenresCatalogUseCase
+import com.tc.gamegallery.domain.GetTagsCatalogUseCase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -47,6 +48,12 @@ object AppModule {
     @Singleton
     fun provideGetGenresCatalogUseCase(gameClient: GameClient): GetGenresCatalogUseCase {
         return GetGenresCatalogUseCase(gameClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetTagsCatalogUseCase(gameClient: GameClient): GetTagsCatalogUseCase {
+        return GetTagsCatalogUseCase(gameClient)
     }
 
 

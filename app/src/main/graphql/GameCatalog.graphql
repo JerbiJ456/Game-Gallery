@@ -3,12 +3,14 @@ query GameCatalog(
     $page: Int,
     $search: String
     $genres: String
+    $tags: String
 ) {
     allGames(
         pageSize: $pageSize,
         page: $page,
         search: $search
         genres: $genres
+        tags: $tags
     ) {
         nextPage
         results {
@@ -21,6 +23,11 @@ query GameCatalog(
             }
             genres {
                 name
+            }
+            parentPlatforms {
+                platform {
+                    slug
+                }
             }
         }
     }
