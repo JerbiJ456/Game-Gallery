@@ -89,7 +89,6 @@ fun GameGalleryScreen() {
                     appViewModel.updateActivity(newActivity)
                     appViewModel.updateArrow(showArrow)
                     appViewModel.updateScrollPosition(0)
-                    appViewModel.updateScrollPositionDetails(5)
                     gameCatalogScreen(
                         viewModel = viewModelCatalog,
                         navController = navController,
@@ -102,7 +101,6 @@ fun GameGalleryScreen() {
                     appViewModel.updateActivity("Genres");
                     appViewModel.updateArrow(false)
                     appViewModel.updateScrollPosition(0)
-                    appViewModel.updateScrollPositionDetails(5)
                     GenresCatalogScreen(
                         viewModel = viewModelGenres,
                         navController = navController,
@@ -113,15 +111,14 @@ fun GameGalleryScreen() {
                     appViewModel.updateActivity("Tags")
                     appViewModel.updateArrow(false)
                     appViewModel.updateScrollPosition(0)
-                    appViewModel.updateScrollPositionDetails(5)
                     TagsCatalogScreen(
                         viewModel = viewModelTags,
                         navController = navController,
                         appViewModel = appViewModel
-                        )
+                    )
                 }
-                composable("favorite") {
-                    appViewModel.updateActivity("Favorite")
+                composable("liked") {
+                    appViewModel.updateActivity("Liked")
                     appViewModel.updateArrow(false)
                     FavoriteScreen()
                 }
@@ -146,8 +143,7 @@ fun GameGalleryScreen() {
                     appViewModel.updateActivity(gameName)
                     appViewModel.updateArrow(true)
                     appViewModel.updateScrollPosition(0)
-                    appViewModel.updateScrollPositionDetails(5)
-                    GameDetailScreen(id = id, detailsViewModal = detailViewModel, appViewModel = appViewModel)
+                    GameDetailScreen(id = id, detailsViewModal = detailViewModel, appViewModel = appViewModel, navController = navController)
                 }
             }
         }

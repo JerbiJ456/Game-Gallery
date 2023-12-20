@@ -2,6 +2,7 @@ package com.tc.gamegallery.presentation
 
 import android.util.Log
 import androidx.annotation.Px
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -17,8 +18,8 @@ class GameGalleryViewModel @Inject constructor(): ViewModel() {
     private val showArrow = mutableStateOf(false)
     private val searchOpen = mutableStateOf(false)
     private var lastScrollIndex = 0
-    private var lastScrollDp = 5
     private val _scrollUp = MutableLiveData(false)
+    private val selectedTabRow = mutableIntStateOf(0)
     val scrollUp: LiveData<Boolean>
         get() = _scrollUp
 
@@ -40,18 +41,8 @@ class GameGalleryViewModel @Inject constructor(): ViewModel() {
 
     fun updateScrollPosition(newScrollIndex: Int) {
         if (newScrollIndex == lastScrollIndex) return
-        Log.d("OK", newScrollIndex.toString())
-        Log.d("OK2", lastScrollIndex.toString())
         _scrollUp.value = newScrollIndex > lastScrollIndex
         lastScrollIndex = newScrollIndex
-    }
-
-    fun updateScrollPositionDetails(newScrollIndex: Int) {
-        if (newScrollIndex == lastScrollDp) return
-        Log.d("OK", newScrollIndex.toString())
-        Log.d("OK2", lastScrollDp.toString())
-        _scrollUp.value = newScrollIndex > lastScrollDp
-        lastScrollDp = newScrollIndex
     }
 
     fun updateSearchOpen() {
@@ -60,6 +51,14 @@ class GameGalleryViewModel @Inject constructor(): ViewModel() {
 
     fun isSearchOpen(): Boolean {
         return searchOpen.value
+    }
+
+    fun changeSelectedTabRow(index: Int) {
+        selectedTabRow.value = index
+    }
+
+    fun getSelectedTabRow(): Int {
+        return selectedTabRow.value
     }
 
 }

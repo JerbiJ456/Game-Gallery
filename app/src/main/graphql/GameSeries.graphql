@@ -1,0 +1,18 @@
+query GameSeries($id : Int!, $page : Int!, $pageSize : Int!,) {
+    gameSeries(id : $id, page: $page, pageSize: $pageSize) {
+        nextPage
+        results {
+            id
+            name
+            thumbnailImage
+            genres {
+                name
+            }
+            parentPlatforms {
+                platform {
+                    slug
+                }
+            }
+        }
+    }
+}

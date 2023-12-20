@@ -54,7 +54,7 @@ val items = listOf(
         unselectedIcon = Icons.Outlined.Sell,
     ),
     BottomNavigationItem(
-        title = "Favorite",
+        title = "Liked",
         selectedIcon = Icons.Filled.Favorite,
         unselectedIcon = Icons.Outlined.FavoriteBorder,
     ),

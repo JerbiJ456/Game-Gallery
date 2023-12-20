@@ -12,9 +12,10 @@ class GetGameCatalogUseCase(
         page: Optional<Int>,
         search: Optional<String>,
         genres: Optional<String?>,
-        tags: Optional<String?>
+        tags: Optional<String?>,
+        dates: Optional<String?>
     ): GameCatalog {
         return gameClient
-            .getGamesCatalog(pageSize, page, search, genres, tags)
+            .getGamesCatalog(pageSize, page, search, genres, tags, dates)
     }
 }

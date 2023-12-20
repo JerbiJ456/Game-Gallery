@@ -4,6 +4,7 @@ query GameCatalog(
     $search: String
     $genres: String
     $tags: String
+    $dates: String
 ) {
     allGames(
         pageSize: $pageSize,
@@ -11,6 +12,7 @@ query GameCatalog(
         search: $search
         genres: $genres
         tags: $tags
+        dates: $dates
     ) {
         nextPage
         results {
