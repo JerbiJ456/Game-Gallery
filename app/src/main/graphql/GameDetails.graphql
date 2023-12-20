@@ -17,5 +17,11 @@ query GameDetails($id : Int!) {
         screenshots {
             image
         }
+        stores {
+            store {
+                name
+                domain
+            }
+        }
     }
 }

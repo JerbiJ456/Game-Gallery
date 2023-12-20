@@ -5,6 +5,7 @@ import com.tc.gamegallery.data.ApolloGameClient
 import com.tc.gamegallery.domain.GameClient
 import com.tc.gamegallery.domain.GetGameCatalogUseCase
 import com.tc.gamegallery.domain.GetGameDetailsUseCase
+import com.tc.gamegallery.domain.GetGameSeriesUseCase
 import com.tc.gamegallery.domain.GetGenresCatalogUseCase
 import com.tc.gamegallery.domain.GetTagsCatalogUseCase
 import dagger.Module
@@ -54,6 +55,12 @@ object AppModule {
     @Singleton
     fun provideGetTagsCatalogUseCase(gameClient: GameClient): GetTagsCatalogUseCase {
         return GetTagsCatalogUseCase(gameClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetGameSeriesUseCase(gameClient: GameClient): GetGameSeriesUseCase {
+        return GetGameSeriesUseCase(gameClient)
     }
 
 

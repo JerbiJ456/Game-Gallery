@@ -5,24 +5,27 @@ import com.apollographql.apollo3.api.Optional
 import com.tc.gamegallery.GameCatalogQuery
 import com.tc.gamegallery.GameDetailsQuery
 import com.tc.gamegallery.GameGenresQuery
+import com.tc.gamegallery.GameSeriesQuery
 import com.tc.gamegallery.GameTagsQuery
 import com.tc.gamegallery.domain.GameCatalog
 import com.tc.gamegallery.domain.GameClient
 import com.tc.gamegallery.domain.GameDetails
+import com.tc.gamegallery.domain.GameSeries
 import com.tc.gamegallery.domain.GenresTags
 
 class ApolloGameClient(
     private val apolloClient: ApolloClient
-    ) : GameClient {
+) : GameClient {
     override suspend fun getGamesCatalog(
         pageSize: Optional<Int?>,
         page: Optional<Int?>,
         search: Optional<String?>,
         genres: Optional<String?>,
-        tags: Optional<String?>
+        tags: Optional<String?>,
+        dates: Optional<String?>
     ): GameCatalog {
         return apolloClient
-            .query(GameCatalogQuery(pageSize, page, search, genres, tags))
+            .query(GameCatalogQuery(pageSize, page, search, genres, tags, dates))
             .execute()
             .data
             ?.allGames
@@ -64,5 +67,19 @@ class ApolloGameClient(
             ?.allTags
             ?.toTags()
             ?: GenresTags()
+    }
+
+    override suspend fun getGameSeries(
+        id: Int,
+        pageSize: Int,
+        page: Int,
+    ): GameSeries {
+        return apolloClient
+            .query(GameSeriesQuery(id, pageSize, page))
+            .execute()
+            .data
+            ?.gameSeries
+            ?.toGameSeries()
+            ?: GameSeries()
     }
 }

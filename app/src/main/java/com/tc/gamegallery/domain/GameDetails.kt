@@ -9,5 +9,6 @@ data class GameDetails(
     val publishers: List<GamePublisher> = listOf(GamePublisher("N/A")),
     val thumbnailImage: String = "NA",
     val backgroundImage: String = "NA",
-    val screenshots: List<Screenshot> = listOf()
+    val screenshots: List<Screenshot> = emptyList(),
+    val stores: List<Store> = emptyList()
 )
