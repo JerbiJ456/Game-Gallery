@@ -3,6 +3,7 @@ package com.tc.gamegallery.di
 import com.apollographql.apollo3.ApolloClient
 import com.tc.gamegallery.data.ApolloGameClient
 import com.tc.gamegallery.domain.GameClient
+import com.tc.gamegallery.domain.GetFavoriteGamesUseCase
 import com.tc.gamegallery.domain.GetGameCatalogUseCase
 import com.tc.gamegallery.domain.GetGameDetailsUseCase
 import com.tc.gamegallery.domain.GetGameSeriesUseCase
@@ -61,6 +62,12 @@ object AppModule {
     @Singleton
     fun provideGetGameSeriesUseCase(gameClient: GameClient): GetGameSeriesUseCase {
         return GetGameSeriesUseCase(gameClient)
+    }
+
+    @Provides
+    @Singleton
+    fun provideGetFavoriteGamesUseCase(gameClient: GameClient): GetFavoriteGamesUseCase {
+        return GetFavoriteGamesUseCase(gameClient)
     }
 
 

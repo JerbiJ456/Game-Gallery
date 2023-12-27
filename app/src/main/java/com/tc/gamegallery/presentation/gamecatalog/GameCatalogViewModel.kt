@@ -26,7 +26,6 @@ import java.time.format.DateTimeFormatter
 class GameCatalogViewModel @Inject constructor(
     private val getGameCatalogUseCase: GetGameCatalogUseCase,
 ): ViewModel() {
-
     private val _state = MutableStateFlow(GamesCatalogState())
     val state = _state.asStateFlow() //only the viewModel can change the state, the UI only have a immutable version of the state
     private val searchDebounce = 1000L

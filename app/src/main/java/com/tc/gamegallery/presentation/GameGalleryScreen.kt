@@ -17,6 +17,7 @@ import androidx.navigation.navArgument
 import com.tc.gamegallery.presentation.genrescatalog.GenresCatalogScreen
 import com.tc.gamegallery.presentation.tagscatalog.TagsCatalogScreen
 import com.tc.gamegallery.presentation.favoritecatalog.FavoriteScreen
+import com.tc.gamegallery.presentation.favoritecatalog.FavoriteViewModel
 import com.tc.gamegallery.presentation.gamecatalog.GameCatalogViewModel
 import com.tc.gamegallery.presentation.gamecatalog.gameCatalogScreen
 import com.tc.gamegallery.presentation.gamedetail.GameDetailScreen
@@ -30,6 +31,7 @@ fun GameGalleryScreen() {
     val detailViewModel = hiltViewModel<GameDetailScreenViewModel>()
     val viewModelGenres = hiltViewModel<GenresCatalogViewModel>()
     val viewModelTags = hiltViewModel<TagsCatalogViewModel>()
+    val viewModelFavorite = hiltViewModel<FavoriteViewModel>()
     val appViewModel = hiltViewModel<GameGalleryViewModel>()
     val navController = rememberNavController()
     val scrollUpState = appViewModel.scrollUp.observeAsState()
@@ -120,7 +122,11 @@ fun GameGalleryScreen() {
                 composable("liked") {
                     appViewModel.updateActivity("Liked")
                     appViewModel.updateArrow(false)
-                    FavoriteScreen()
+                    FavoriteScreen(
+                        viewModel = viewModelFavorite,
+                        navController = navController,
+                        appViewModel = appViewModel
+                    )
                 }
                 composable("detail/{game}/{id}",
                     arguments = listOf(

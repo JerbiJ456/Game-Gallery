@@ -1,0 +1,19 @@
+query GameFromId($id : Int!) {
+    gameDetails(id : $id) {
+        id
+        name
+        backgroundImage
+        thumbnailImage
+        tags {
+            name
+        }
+        genres {
+            name
+        }
+        parentPlatforms {
+            platform {
+                slug
+            }
+        }
+    }
+}

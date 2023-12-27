@@ -1,6 +1,7 @@
 package com.tc.gamegallery.data
 
 import com.tc.gamegallery.GameCatalogQuery
+import com.tc.gamegallery.GameFromIdQuery
 import com.tc.gamegallery.domain.ResultGames
 
 fun GameCatalogQuery.Result.toResult(): ResultGames {
@@ -12,5 +13,17 @@ fun GameCatalogQuery.Result.toResult(): ResultGames {
         tags = tags?.mapNotNull { it.toTag() } ?: emptyList(),
         genres = genres?.mapNotNull { it.toGenre() } ?: emptyList(),
         platforms = parentPlatforms?.mapNotNull { it.toPlatforms() } ?: emptyList()
+    )
+}
+
+fun GameFromIdQuery.GameDetails.toResult(): ResultGames {
+    return ResultGames(
+        id = id,
+        name = name ?: "No Name",
+        //backgroundImage = backgroundImage ?: "No background image",
+        thumbnailImage = thumbnailImage ?: "No thumbnailImage",
+        tags = emptyList(),
+        genres = emptyList(),
+        platforms = emptyList()
     )
 }

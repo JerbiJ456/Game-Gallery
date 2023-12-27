@@ -4,6 +4,7 @@ import com.apollographql.apollo3.ApolloClient
 import com.apollographql.apollo3.api.Optional
 import com.tc.gamegallery.GameCatalogQuery
 import com.tc.gamegallery.GameDetailsQuery
+import com.tc.gamegallery.GameFromIdQuery
 import com.tc.gamegallery.GameGenresQuery
 import com.tc.gamegallery.GameSeriesQuery
 import com.tc.gamegallery.GameTagsQuery
@@ -12,6 +13,9 @@ import com.tc.gamegallery.domain.GameClient
 import com.tc.gamegallery.domain.GameDetails
 import com.tc.gamegallery.domain.GameSeries
 import com.tc.gamegallery.domain.GenresTags
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
 
 class ApolloGameClient(
     private val apolloClient: ApolloClient
@@ -81,5 +85,18 @@ class ApolloGameClient(
             ?.gameSeries
             ?.toGameSeries()
             ?: GameSeries()
+    }
+
+    override suspend fun getFavoriteGamesCatalog(favoriteGamesIds: List<Int>): GameCatalog {
+        val gamesList = coroutineScope {
+            favoriteGamesIds.map { gameId ->
+                async {
+                    val response = apolloClient.query(GameFromIdQuery(gameId)).execute()
+                    response.data?.gameDetails?.toResult()
+                }
+            }.awaitAll()
+        }
+        val validGamesList = gamesList.filterNotNull()
+        return GameCatalog(results = validGamesList)
     }
 }
