@@ -1,5 +1,6 @@
 package com.tc.gamegallery.presentation.favoritecatalog
 
+import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,9 +8,11 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.exception.ApolloException
 import com.tc.gamegallery.domain.GameCatalog
 import com.tc.gamegallery.domain.GameDetails
+import com.tc.gamegallery.domain.GetFavoriteGameIdsUseCase
 import com.tc.gamegallery.domain.GetFavoriteGamesUseCase
 import com.tc.gamegallery.domain.GetGameCatalogUseCase
 import com.tc.gamegallery.domain.ResultGames
+import com.tc.gamegallery.domain.SaveFavoriteGameIdsUseCase
 import com.tc.gamegallery.presentation.gamecatalog.GameCatalogViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +24,9 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
     private val getFavoriteGamesUseCase: GetFavoriteGamesUseCase,
+    private val sharedPreferences: SharedPreferences,
+    private val saveFavoriteGameIdsUseCase: SaveFavoriteGameIdsUseCase,
+    private val getFavoriteGameIdsUseCase: GetFavoriteGameIdsUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow(GamesCatalogState())
     val state = _state.asStateFlow()
@@ -32,7 +38,7 @@ class FavoriteViewModel @Inject constructor(
                 _state.update {
                     it.copy(
                         gamesCatalog = getFavoriteGamesUseCase.execute(
-                            getLikedGameIds()
+                            getFavoriteGameIds()
                         ),
                         isLoading = false,
                     )
@@ -52,12 +58,13 @@ class FavoriteViewModel @Inject constructor(
         }
     }
 
-    private fun getLikedGameIds(): List<Int> {
-        val likedGameIds = mutableListOf<Int>()
-        for (i in 1..5) {
-            likedGameIds.add(i)
+    private fun getFavoriteGameIds(): List<Int> {
+        viewModelScope.launch {
+            saveFavoriteGameIdsUseCase.execute(listOf(9,8,7,6,5,4,3))
         }
-        return likedGameIds
+        val favoriteGameIds = getFavoriteGameIdsUseCase.execute()
+
+        return favoriteGameIds
     }
 
     data class GamesCatalogState(
