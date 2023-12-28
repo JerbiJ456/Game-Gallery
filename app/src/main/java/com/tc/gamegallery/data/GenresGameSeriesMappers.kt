@@ -8,3 +8,4 @@ fun GameSeriesQuery.Genre.toGenre(): Genre {
         name = name ?: "N/A"
     )
 }
+

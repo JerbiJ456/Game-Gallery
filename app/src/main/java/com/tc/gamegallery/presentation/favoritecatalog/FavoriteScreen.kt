@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.tc.gamegallery.presentation.GameGalleryViewModel
-import com.tc.gamegallery.presentation.gamecatalog.GameTile
 import com.tc.gamegallery.presentation.tabRowItems
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -50,6 +49,10 @@ fun FavoriteScreen(
 
     LaunchedEffect(pagerState.currentPage) {
         appViewModel.changeSelectedTabRow(pagerState.currentPage)
+    }
+
+    LaunchedEffect(state.results) {
+        viewModel.updatePage()
     }
 
     LaunchedEffect(appViewModel.getSelectedTabRow()) {
@@ -98,59 +101,10 @@ fun FavoriteScreen(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp) // espace entre les cartes sur l'axe horizontal
                             ) {
                                 itemsIndexed(state.results) { _, game ->
-                                    GameTile(
+                                    FavoriteTile(
                                         game,
-                                        navController = navController
-                                    )
-                                }
-
-                                item {
-                                    if (state.newPageIsLoading) {
-                                        CircularProgressIndicator()
-                                    }
-                                }
-                            }
-                        }
-                        1 -> {
-                            appViewModel.updateScrollPosition(upcomingReleasesScrollState.firstVisibleItemIndex)
-                            LazyVerticalGrid(
-                                state = upcomingReleasesScrollState,
-                                columns = GridCells.Fixed(2),
-                                modifier = Modifier.padding(
-                                    end = 16.dp,
-                                    start = 16.dp
-                                ), // Pour ajouter un peu d'espace au bas de la liste
-                                horizontalArrangement = Arrangement.spacedBy(8.dp) // espace entre les cartes sur l'axe horizontal
-                            ) {
-                                itemsIndexed(state.upcomingReleases) { _, game ->
-                                    GameTile(
-                                        game,
-                                        navController = navController
-                                    )
-                                }
-
-                                item {
-                                    if (state.newPageIsLoading) {
-                                        CircularProgressIndicator()
-                                    }
-                                }
-                            }
-                        }
-                        2 -> {
-                            appViewModel.updateScrollPosition(newReleasesScrollState.firstVisibleItemIndex)
-                            LazyVerticalGrid(
-                                state = newReleasesScrollState,
-                                columns = GridCells.Fixed(2),
-                                modifier = Modifier.padding(
-                                    end = 16.dp,
-                                    start = 16.dp
-                                ), // Pour ajouter un peu d'espace au bas de la liste
-                                horizontalArrangement = Arrangement.spacedBy(8.dp) // espace entre les cartes sur l'axe horizontal
-                            ) {
-                                itemsIndexed(state.newReleases) { _, game ->
-                                    GameTile(
-                                        game,
-                                        navController = navController
+                                        navController = navController,
+                                        viewModel = viewModel
                                     )
                                 }
 

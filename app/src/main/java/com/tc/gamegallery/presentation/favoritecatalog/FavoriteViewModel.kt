@@ -1,19 +1,15 @@
 package com.tc.gamegallery.presentation.favoritecatalog
 
-import android.content.SharedPreferences
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.exception.ApolloException
 import com.tc.gamegallery.domain.GameCatalog
 import com.tc.gamegallery.domain.GameDetails
 import com.tc.gamegallery.domain.GetFavoriteGameIdsUseCase
 import com.tc.gamegallery.domain.GetFavoriteGamesUseCase
-import com.tc.gamegallery.domain.GetGameCatalogUseCase
 import com.tc.gamegallery.domain.ResultGames
 import com.tc.gamegallery.domain.SaveFavoriteGameIdsUseCase
-import com.tc.gamegallery.presentation.gamecatalog.GameCatalogViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,15 +20,42 @@ import javax.inject.Inject
 @HiltViewModel
 class FavoriteViewModel @Inject constructor(
     private val getFavoriteGamesUseCase: GetFavoriteGamesUseCase,
-    private val sharedPreferences: SharedPreferences,
-    private val saveFavoriteGameIdsUseCase: SaveFavoriteGameIdsUseCase,
-    private val getFavoriteGameIdsUseCase: GetFavoriteGameIdsUseCase
+    private val getFavoriteGameIdsUseCase: GetFavoriteGameIdsUseCase,
+    private val saveFavoriteGameIdsUseCase: SaveFavoriteGameIdsUseCase
 ): ViewModel() {
     private val _state = MutableStateFlow(GamesCatalogState())
     val state = _state.asStateFlow()
     private var cachedGames = listOf<ResultGames>()
+    private var favoriteGameIds = listOf<Int>()
 
     init {
+        updatePage()
+    }
+
+     fun getFavoriteGameIds(): List<Int> {
+//         viewModelScope.launch {
+//             saveFavoriteGameIdsUseCase.execute(listOf(1,2))
+//         }
+        favoriteGameIds = getFavoriteGameIdsUseCase.execute()
+        return favoriteGameIds
+    }
+
+    fun removeFavoriteGameId(gameId: Int) {
+        cachedGames = cachedGames.filter { it.id != gameId }
+        _state.update {
+            it.copy(
+                newPageIsLoading = false,
+                results = cachedGames
+            )
+        }
+
+        favoriteGameIds = favoriteGameIds.filter { it != gameId }
+        viewModelScope.launch {
+            saveFavoriteGameIdsUseCase.execute(favoriteGameIds)
+        }
+    }
+
+    fun updatePage() {
         viewModelScope.launch {
             try {
                 _state.update {
@@ -44,7 +67,7 @@ class FavoriteViewModel @Inject constructor(
                     )
                 }
 
-                cachedGames += _state.value.gamesCatalog.results
+                cachedGames = _state.value.gamesCatalog.results
 
                 _state.update {
                     it.copy(
@@ -56,15 +79,6 @@ class FavoriteViewModel @Inject constructor(
                 Log.d("apollo", "failed")
             }
         }
-    }
-
-    private fun getFavoriteGameIds(): List<Int> {
-        viewModelScope.launch {
-            saveFavoriteGameIdsUseCase.execute(listOf(9,8,7,6,5,4,3))
-        }
-        val favoriteGameIds = getFavoriteGameIdsUseCase.execute()
-
-        return favoriteGameIds
     }
 
     data class GamesCatalogState(

@@ -22,8 +22,8 @@ fun GameFromIdQuery.GameDetails.toResult(): ResultGames {
         name = name ?: "No Name",
         //backgroundImage = backgroundImage ?: "No background image",
         thumbnailImage = thumbnailImage ?: "No thumbnailImage",
-        tags = emptyList(),
-        genres = emptyList(),
-        platforms = emptyList()
+        tags = tags?.mapNotNull { it.toTag() } ?: emptyList(),
+        genres = genres?.mapNotNull { it.toGenre() } ?: emptyList(),
+        platforms = parentPlatforms?.mapNotNull { it.toPlatforms() } ?: emptyList()
     )
 }
