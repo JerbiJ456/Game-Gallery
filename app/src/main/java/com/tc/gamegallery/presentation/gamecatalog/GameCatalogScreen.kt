@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.itemsIndexed
@@ -40,8 +41,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.tc.gamegallery.R
 import com.tc.gamegallery.presentation.GameGalleryViewModel
 import com.tc.gamegallery.presentation.tabRowItems
 
@@ -60,6 +64,10 @@ fun gameCatalogScreen(
         viewModel.getCallInfo(genres, tags)
         viewModel.nextPageNewReleases()
         viewModel.nextPageUpcomingReleases()
+    }
+
+    LaunchedEffect(viewModel.favoriteGameIds) {
+        viewModel.getCallInfo(genres, tags)
     }
 
     val pagerState = rememberPagerState {
@@ -157,7 +165,8 @@ fun gameCatalogScreen(
                                     }
                                     GameTile(
                                         game,
-                                        navController = navController
+                                        navController = navController,
+                                        viewModel = viewModel
                                     )
                                 }
 
@@ -185,7 +194,8 @@ fun gameCatalogScreen(
                                     }
                                     GameTile(
                                         game,
-                                        navController = navController
+                                        navController = navController,
+                                        viewModel = viewModel
                                     )
                                 }
 
@@ -213,7 +223,8 @@ fun gameCatalogScreen(
                                     }
                                     GameTile(
                                         game,
-                                        navController = navController
+                                        navController = navController,
+                                        viewModel = viewModel
                                     )
                                 }
 

@@ -7,6 +7,7 @@ import com.apollographql.apollo3.api.Optional
 import com.apollographql.apollo3.exception.ApolloException
 import com.tc.gamegallery.domain.GameCatalog
 import com.tc.gamegallery.domain.GameDetails
+import com.tc.gamegallery.domain.GetFavoriteGameIdsUseCase
 import com.tc.gamegallery.domain.GetGameCatalogUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
@@ -17,6 +18,7 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import com.tc.gamegallery.domain.ResultGames
+import com.tc.gamegallery.domain.SaveFavoriteGameIdsUseCase
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.Period
@@ -25,8 +27,9 @@ import java.time.format.DateTimeFormatter
 @HiltViewModel
 class GameCatalogViewModel @Inject constructor(
     private val getGameCatalogUseCase: GetGameCatalogUseCase,
+    private val saveFavoriteGameIdsUseCase: SaveFavoriteGameIdsUseCase,
+    private val getFavoriteGameIdsUseCase: GetFavoriteGameIdsUseCase
 ): ViewModel() {
-
     private val _state = MutableStateFlow(GamesCatalogState())
     val state = _state.asStateFlow() //only the viewModel can change the state, the UI only have a immutable version of the state
     private val searchDebounce = 1000L
@@ -39,11 +42,13 @@ class GameCatalogViewModel @Inject constructor(
     private val currentDate = LocalDate.now()
     private val newReleasesDate = listOf(currentDate.minusMonths(2), currentDate).joinToString(",")
     private val upcomingReleases = listOf(currentDate, currentDate.plusMonths(4)).joinToString(",")
+    var favoriteGameIds = listOf<Int>()
 
     fun getCallInfo(genre: String?, tag: String?) {
         genres = genre
         tags = tag
         cachedGames = emptyList()
+        favoriteGameIds = getFavoriteGameIdsUseCase.execute()
         _state.update {it.copy(
             isLoading = true,
             nextPage = 1,
@@ -75,6 +80,24 @@ class GameCatalogViewModel @Inject constructor(
 
     fun nextPageNewReleases() {
         updateNewReleases()
+    }
+
+    fun addFavoriteGameId(gameId: Int) {
+        favoriteGameIds = favoriteGameIds + gameId
+        viewModelScope.launch {
+            saveFavoriteGameIdsUseCase.execute(favoriteGameIds)
+        }
+    }
+
+    fun removeFavoriteGameId(gameId: Int) {
+        favoriteGameIds = favoriteGameIds.filter { it != gameId }
+        viewModelScope.launch {
+            saveFavoriteGameIdsUseCase.execute(favoriteGameIds)
+        }
+    }
+
+    fun isGameIdInFavorite(gameId: Int): Boolean {
+        return gameId in favoriteGameIds
     }
 
     private fun updateNewReleases() {

@@ -1,4 +1,4 @@
-package com.tc.gamegallery.presentation.gamecatalog
+package com.tc.gamegallery.presentation.favoritecatalog
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,12 +19,7 @@ import androidx.compose.material.Card
 import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Icon
 import androidx.compose.material.Text
-import androidx.compose.material.icons.Icons
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -35,7 +30,6 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavController
 import coil.compose.SubcomposeAsyncImage
 import com.tc.gamegallery.R
@@ -55,11 +49,11 @@ val platformsMap = mapOf(
 )
 
 @Composable
-fun GameTile(
+fun FavoriteTile(
     game: ResultGames,
     modifier: Modifier = Modifier,
     navController: NavController,
-    viewModel: GameCatalogViewModel
+    viewModel: FavoriteViewModel
 ) {
     val genres = game.genres.map { it.name }
     Card(
@@ -103,17 +97,12 @@ fun GameTile(
                         .background(Color.Gray.copy(alpha = 0.5f))
                         .wrapContentSize(align = Alignment.TopEnd)
                         .clickable {
-                            if (viewModel.isGameIdInFavorite(game.id)) {
-                                viewModel.removeFavoriteGameId(game.id)
-                            } else {
-                                viewModel.addFavoriteGameId(game.id)
-                            }
+                            viewModel.removeFavoriteGameId(game.id)
                         }
                 ) {
                     Icon(
-                        imageVector = ImageVector.vectorResource(R.drawable.favicon),
-                        contentDescription = "Favorite",
-                        tint = if (viewModel.isGameIdInFavorite(game.id)) Color.Red else Color.Gray,
+                        imageVector = ImageVector.vectorResource(R.drawable.deleteicon),
+                        contentDescription = "Delete",
                         modifier = Modifier
                             .padding(8.dp)
                             .size(28.dp)
@@ -130,7 +119,7 @@ fun GameTile(
             Row (modifier = modifier
                 .padding(start = 16.dp, top = 15.dp, bottom = 3.dp, end = 16.dp),
                 horizontalArrangement = Arrangement.spacedBy(5.dp)
-                ){
+            ){
                 game.platforms.take(5).forEach {
                     Icon(
                         modifier = modifier

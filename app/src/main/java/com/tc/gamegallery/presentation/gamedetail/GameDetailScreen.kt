@@ -119,7 +119,8 @@ fun GameDetailScreen(
                                 Box(modifier = Modifier.fillMaxSize()) {
                                     TopImages(
                                         backgroundImage = detailState.gameDetails?.backgroundImage,
-                                        iconImage = detailState.gameDetails?.thumbnailImage
+                                        iconImage = detailState.gameDetails?.thumbnailImage,
+                                        detailsViewModal
                                     )
                                 }
                             }
@@ -416,7 +417,11 @@ fun ScreenshotsSection(screenshots: List<Screenshot>?) {
 }
 
 @Composable
-fun TopImages(backgroundImage: String?, iconImage: String?) {
+fun TopImages(
+    backgroundImage: String?,
+    iconImage: String?,
+    detailsViewModal: GameDetailScreenViewModel
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -450,6 +455,30 @@ fun TopImages(backgroundImage: String?, iconImage: String?) {
                             .align(Alignment.TopCenter),
                         contentDescription = null,
                     )
+                    Box(
+                        modifier = Modifier
+                            .align(Alignment.TopEnd) // Aligner l'icône en haut à droite
+                            .size(32.dp)
+                            .clip(CircleShape)
+                            .background(Color.Gray.copy(alpha = 0.5f))
+                            .wrapContentSize(align = Alignment.TopCenter)
+                            .clickable {
+                                if (detailsViewModal.isGameIdInFavorite()) {
+                                    detailsViewModal.removeFavoriteGameId()
+                                } else {
+                                    detailsViewModal.addFavoriteGameId()
+                                }
+                            }
+                    ) {
+                        Icon(
+                            imageVector = ImageVector.vectorResource(R.drawable.favicon),
+                            contentDescription = "Favorite",
+                            tint = if (detailsViewModal.isGameIdInFavorite()) Color.Red else Color.Gray,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .size(28.dp)
+                        )
+                    }
                 }
             }
         }

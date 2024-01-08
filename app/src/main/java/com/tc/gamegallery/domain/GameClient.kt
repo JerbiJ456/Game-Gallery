@@ -28,4 +28,8 @@ interface GameClient {
         pageSize: Int,
         page: Int,
     ) : GameSeries
+
+    suspend fun getFavoriteGamesCatalog(
+        favoriteGamesIds: List<Int>
+    ) : GameCatalog
 }

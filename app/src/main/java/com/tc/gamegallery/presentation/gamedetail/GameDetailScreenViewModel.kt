@@ -7,10 +7,12 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.apollographql.apollo3.exception.ApolloException
+import com.tc.gamegallery.domain.GetFavoriteGameIdsUseCase
 import com.tc.gamegallery.domain.GetGameDetailsUseCase
 import com.tc.gamegallery.domain.GetGameSeriesUseCase
 import com.tc.gamegallery.domain.ResultGameSeries
 import com.tc.gamegallery.domain.ResultGenresTags
+import com.tc.gamegallery.domain.SaveFavoriteGameIdsUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -22,16 +24,20 @@ import javax.inject.Inject
 @HiltViewModel
 class GameDetailScreenViewModel @Inject constructor (
     private val getGameDetailsUseCase: GetGameDetailsUseCase,
-    private val getGameSeriesUseCase: GetGameSeriesUseCase
+    private val getGameSeriesUseCase: GetGameSeriesUseCase,
+    private val getFavoriteGameIdsUseCase: GetFavoriteGameIdsUseCase,
+    private val saveFavoriteGameIdsUseCase: SaveFavoriteGameIdsUseCase
 ) : ViewModel() {
     private val _state = MutableStateFlow(GameDetailScreenState())
     val state: StateFlow<GameDetailScreenState> = _state.asStateFlow()
 
     private var selectedGameId by mutableIntStateOf(0)
     private var cachedGames = listOf<ResultGameSeries>()
+    private var favoriteGameIds = listOf<Int>()
 
     init {
         reset()
+        favoriteGameIds = getFavoriteGameIdsUseCase.execute()
     }
 
     fun reset() {
@@ -87,6 +93,24 @@ class GameDetailScreenViewModel @Inject constructor (
             )
             }
         }
+    }
+
+    fun addFavoriteGameId() {
+        favoriteGameIds = favoriteGameIds + selectedGameId
+        viewModelScope.launch {
+            saveFavoriteGameIdsUseCase.execute(favoriteGameIds)
+        }
+    }
+
+    fun removeFavoriteGameId() {
+        favoriteGameIds = favoriteGameIds.filter { it != selectedGameId }
+        viewModelScope.launch {
+            saveFavoriteGameIdsUseCase.execute(favoriteGameIds)
+        }
+    }
+
+    fun isGameIdInFavorite(): Boolean {
+        return selectedGameId in favoriteGameIds
     }
 
 }
